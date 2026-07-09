@@ -1,6 +1,8 @@
 import { motion } from 'motion/react';
-import { Calendar, Clock, Mail, Send } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { Calendar, Clock, Mail, Send, Loader2 } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { googleSignIn, getAccessToken, initAuth } from '../lib/firebase';
+import { User } from 'firebase/auth';
 
 export function Contact() {
   const dateInputRef = useRef<HTMLInputElement>(null);
@@ -13,17 +15,125 @@ export function Contact() {
     time: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMsg, setStatusMsg] = useState('');
+  const [user, setUser] = useState<User | null>(null);
+  
+  useEffect(() => {
+    const unsubscribe = initAuth(
+      (user, token) => setUser(user),
+      () => setUser(null)
+    );
+    return () => unsubscribe();
+  }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Interview/Meeting Request from ${formData.name}`);
-    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nProposed Date: ${formData.date}\nProposed Time: ${formData.time}\n\nMessage:\n${formData.message}`);
-    window.location.href = `mailto:pratikkumarjena04@gmail.com?subject=${subject}&body=${body}`;
+    setIsSubmitting(true);
+    setStatusMsg('');
+    
+    try {
+      let token = await getAccessToken();
+      if (!token) {
+        setStatusMsg('Please sign in with Google to schedule the meeting...');
+        const result = await googleSignIn();
+        if (result) {
+          token = result.accessToken;
+          setUser(result.user);
+        } else {
+          throw new Error('Authentication failed');
+        }
+      }
+
+      const confirmed = window.confirm(
+        `Are you sure you want to schedule this meeting on your Google Calendar and create a Google Sheet for notes?`
+      );
+      
+      if (!confirmed) {
+        setIsSubmitting(false);
+        setStatusMsg('');
+        return;
+      }
+
+      setStatusMsg('Creating Meeting Notes in Google Sheets...');
+      
+      // 1. Create a Google Sheet
+      const sheetResponse = await fetch('https://sheets.googleapis.com/v4/spreadsheets', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          properties: {
+            title: `Interview/Meeting Notes: ${formData.name}`
+          }
+        })
+      });
+      
+      if (!sheetResponse.ok) {
+        throw new Error('Failed to create Google Sheet');
+      }
+      
+      const sheetData = await sheetResponse.json();
+      const sheetUrl = sheetData.spreadsheetUrl;
+
+      setStatusMsg('Scheduling Google Meet in Calendar...');
+      
+      // 2. Create Calendar Event with Meet Link
+      const startDateTime = new Date(`${formData.date}T${formData.time}:00`);
+      const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // 1 hour later
+
+      const event = {
+        summary: `Interview/Meeting: ${formData.name} & Pratik Kumar Jena`,
+        description: `${formData.message}\n\nMeeting Notes Sheet: ${sheetUrl}`,
+        start: { dateTime: startDateTime.toISOString() },
+        end: { dateTime: endDateTime.toISOString() },
+        attendees: [
+          { email: formData.email },
+          { email: 'pratikkumarjena9@gmail.com' } // Portfolio Owner
+        ],
+        conferenceData: {
+          createRequest: {
+            requestId: Math.random().toString(36).substring(7),
+            conferenceSolutionKey: { type: "hangoutsMeet" }
+          }
+        }
+      };
+
+      const calResponse = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(event)
+      });
+
+      if (!calResponse.ok) {
+        throw new Error('Failed to create Calendar Event');
+      }
+
+      const calData = await calResponse.json();
+      const meetLink = calData.hangoutLink;
+
+      setStatusMsg('Meeting successfully scheduled!');
+      setFormData({ name: '', email: '', date: '', time: '', message: '' });
+      
+      setTimeout(() => setStatusMsg(''), 5000);
+      
+    } catch (error) {
+      console.error(error);
+      setStatusMsg('An error occurred while scheduling. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
 
   return (
     <section id="contact" className="py-32 px-6 relative transition-colors duration-300">
@@ -160,14 +270,25 @@ export function Contact() {
               ></textarea>
             </div>
 
-            <div className="pt-4 flex justify-center">
+            <div className="pt-4 flex flex-col items-center gap-4">
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-teal-500 hover:bg-teal-600 dark:bg-teal-500 dark:hover:bg-teal-400 text-white dark:text-slate-950 font-medium rounded-lg transition-colors shadow-lg shadow-teal-500/20"
+                disabled={isSubmitting}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-teal-500 hover:bg-teal-600 disabled:bg-teal-500/50 dark:bg-teal-500 dark:hover:bg-teal-400 dark:disabled:bg-teal-500/50 text-white dark:text-slate-950 font-medium rounded-lg transition-colors shadow-lg shadow-teal-500/20"
               >
-                <Send className="w-5 h-5" />
-                Request Meeting
+                {isSubmitting ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
+                {isSubmitting ? 'Processing...' : 'Schedule Meeting'}
               </button>
+              
+              {statusMsg && (
+                <div className="text-sm font-medium text-teal-600 dark:text-teal-400 text-center animate-pulse">
+                  {statusMsg}
+                </div>
+              )}
             </div>
           </form>
         </motion.div>
