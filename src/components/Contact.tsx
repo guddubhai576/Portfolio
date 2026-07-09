@@ -1,13 +1,15 @@
 import { motion } from 'motion/react';
 import { Calendar, Clock, Mail, Send, Loader2 } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, FormEvent, ChangeEvent } from 'react';
 import { googleSignIn, getAccessToken, initAuth } from '../lib/firebase';
 import { User } from 'firebase/auth';
+import { InlineWidget } from 'react-calendly';
 
 export function Contact() {
   const dateInputRef = useRef<HTMLInputElement>(null);
   const timeInputRef = useRef<HTMLInputElement>(null);
 
+  const [bookingMethod, setBookingMethod] = useState<'custom' | 'calendly'>('custom');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,7 +29,7 @@ export function Contact() {
     return () => unsubscribe();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setStatusMsg('');
@@ -137,7 +139,7 @@ export function Contact() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -158,9 +160,24 @@ export function Contact() {
           <h3 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-6">
             Get In Touch & Schedule a Meeting
           </h3>
-          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed mb-8">
             I'm currently seeking internships, full-time Data Analyst / Frontend Developer roles, freelance opportunities, and open-source collaborations. Use the form below to schedule an interview or just say hi!
           </p>
+
+          <div className="flex justify-center gap-4 mb-8">
+            <button
+              onClick={() => setBookingMethod('custom')}
+              className={`px-6 py-2 rounded-full font-medium transition-colors ${bookingMethod === 'custom' ? 'bg-teal-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+            >
+              Custom Booking
+            </button>
+            <button
+              onClick={() => setBookingMethod('calendly')}
+              className={`px-6 py-2 rounded-full font-medium transition-colors ${bookingMethod === 'calendly' ? 'bg-teal-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+            >
+              Calendly
+            </button>
+          </div>
         </motion.div>
 
         <motion.div
@@ -169,6 +186,7 @@ export function Contact() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
+          {bookingMethod === 'custom' ? (
           <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-8 rounded-2xl shadow-sm dark:shadow-none space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
@@ -299,6 +317,11 @@ export function Contact() {
               )}
             </div>
           </form>
+          ) : (
+            <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-2 sm:p-4 rounded-2xl shadow-sm dark:shadow-none min-h-[700px]">
+              <InlineWidget url="https://calendly.com/pratikkumarjena9/interview" styles={{ height: '700px' }} />
+            </div>
+          )}
         </motion.div>
       </div>
     </section>
