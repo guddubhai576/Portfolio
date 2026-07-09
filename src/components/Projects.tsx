@@ -57,7 +57,7 @@ export function Projects() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white mb-12 flex items-center gap-4">
-            <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">05.</span> Featured Projects
+            <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">06.</span> Featured Projects
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-4"></div>
           </h2>
 
