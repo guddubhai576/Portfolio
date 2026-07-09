@@ -3,22 +3,46 @@ import { FolderGit2, ExternalLink, Github } from 'lucide-react';
 
 const projects = [
   {
+    title: "Portfolio Analytics Dashboard",
+    description: "Architect and deliver a production-grade, fully customisable portfolio analytics dashboard \u2013 replicating the sophistication of institutional platforms like Bloomberg Terminal.",
+    tech: ["React", "Analytics", "Frontend"],
+    github: "https://github.com/pratik04032/Project-1C-Front-End-Developer-Portfolio-Analytics-Dashboard",
+    demo: "https://project-1-c-front-end-developer-por.vercel.app"
+  },
+  {
+    title: "Real-Time Stock Screener",
+    description: "Design, build, and deliver a production-grade real-time stock screener application \u2013 a direct competitor to Screener.in and Finviz.",
+    tech: ["React", "Finance", "Frontend"],
+    github: "https://github.com/pratik04032/Project-1A-Front-End-Developer-Real-Time-Stock-Screener",
+    demo: "https://project-1-a-front-end-developer-rea-alpha.vercel.app"
+  },
+  {
+    title: "Positive Quote Generator",
+    description: "A positive quote is a short yet powerful statement that inspires optimism, boosts confidence, and uplifts the spirit.",
+    tech: ["Web Tech", "API", "Frontend"],
+    github: "https://github.com/pratik04032/positive-quote",
+    demo: "https://positive-quote.vercel.app"
+  },
+  {
+    title: "Multi-Step Loan Form",
+    description: "Build a production-grade, 8+ step multi-step loan application form with real-time validation, conditional field rendering, and document upload.",
+    tech: ["Frontend", "Forms", "Validation"],
+    github: "https://github.com/pratik04032/Project-1B-Front-End-Developer-Multi-Step-Loan-Application-Form",
+    demo: null
+  },
+  {
     title: "Deepfake Analysis using CNN",
     description: "Deep learning model utilizing MobileNetV2 and CNN architectures to accurately detect and classify manipulated media.",
     tech: ["Python", "TensorFlow", "CNN", "MobileNetV2"],
-    github: "https://github.com/pratik04032"
+    github: "https://github.com/pratik04032/mobilenetv2-project",
+    demo: null
   },
   {
     title: "AI Resume Analyzer",
     description: "Interactive application that parses resumes, analyzes skill sets, and generates custom portfolio dashboards.",
     tech: ["Python", "Streamlit", "HTML/CSS"],
-    github: "https://github.com/pratik04032"
-  },
-  {
-    title: "Blood Bank Management System",
-    description: "Structured management system featuring dedicated modules for Donors, Inventory, and Admin controls.",
-    tech: ["Web Tech", "DB Management", "SQL"],
-    github: "https://github.com/pratik04032"
+    github: "https://github.com/pratik04032",
+    demo: null
   }
 ];
 
@@ -51,11 +75,6 @@ export function Projects() {
                   <div className="p-3 bg-teal-100 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-xl">
                     <FolderGit2 className="w-6 h-6" />
                   </div>
-                  <div className="flex gap-3 text-slate-400 dark:text-slate-400">
-                    <a href={project.github} target="_blank" rel="noreferrer" className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
-                      <Github className="w-5 h-5" />
-                    </a>
-                  </div>
                 </div>
 
                 <h3 className="text-xl font-display font-semibold text-slate-900 dark:text-slate-200 mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
@@ -66,12 +85,26 @@ export function Projects() {
                   {project.description}
                 </p>
 
-                <div className="flex flex-wrap gap-3 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/50">
-                  {project.tech.map(tech => (
-                    <span key={tech} className="text-xs font-mono text-slate-500">
-                      {tech}
-                    </span>
-                  ))}
+                <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/50 flex flex-col gap-4">
+                  <div className="flex flex-wrap gap-2">
+                    {project.tech.map(tech => (
+                      <span key={tech} className="text-xs font-mono text-slate-500">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-4 text-sm font-medium">
+                    <a href={project.github} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+                      <Github className="w-4 h-4" />
+                      GitHub
+                    </a>
+                    {project.demo && (
+                      <a href={project.demo} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+                        <ExternalLink className="w-4 h-4" />
+                        Live Demo
+                      </a>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             ))}
