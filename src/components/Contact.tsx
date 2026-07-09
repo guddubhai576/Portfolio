@@ -81,34 +81,42 @@ export function Contact() {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label htmlFor="date" className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
-                  <Calendar className="w-4 h-4 text-teal-500" />
+                <label htmlFor="date" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Proposed Date
                 </label>
-                <input
-                  type="date"
-                  id="date"
-                  name="date"
-                  required
-                  value={formData.date}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Calendar className="w-5 h-5 text-teal-500" />
+                  </div>
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    required
+                    value={formData.date}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white appearance-none"
+                  />
+                </div>
               </div>
               <div className="space-y-2">
-                <label htmlFor="time" className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
-                  <Clock className="w-4 h-4 text-teal-500" />
+                <label htmlFor="time" className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Proposed Time
                 </label>
-                <input
-                  type="time"
-                  id="time"
-                  name="time"
-                  required
-                  value={formData.time}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Clock className="w-5 h-5 text-teal-500" />
+                  </div>
+                  <input
+                    type="time"
+                    id="time"
+                    name="time"
+                    required
+                    value={formData.time}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white appearance-none"
+                  />
+                </div>
               </div>
             </div>
 
