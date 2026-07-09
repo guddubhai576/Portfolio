@@ -32,6 +32,13 @@ export function Contact() {
     setIsSubmitting(true);
     setStatusMsg('');
     
+    const startDateTime = new Date(`${formData.date}T${formData.time}:00`);
+    if (startDateTime < new Date()) {
+      setStatusMsg('Please select a date and time in the future.');
+      setIsSubmitting(false);
+      return;
+    }
+    
     try {
       let token = await getAccessToken();
       if (!token) {
@@ -101,7 +108,7 @@ export function Contact() {
         }
       };
 
-      const calResponse = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1', {
+      const calResponse = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1&sendUpdates=all', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -117,10 +124,10 @@ export function Contact() {
       const calData = await calResponse.json();
       const meetLink = calData.hangoutLink;
 
-      setStatusMsg('Meeting successfully scheduled!');
+      setStatusMsg(`Meeting successfully scheduled! Meet Link: ${meetLink}`);
       setFormData({ name: '', email: '', date: '', time: '', message: '' });
       
-      setTimeout(() => setStatusMsg(''), 5000);
+      setTimeout(() => setStatusMsg(''), 10000);
       
     } catch (error) {
       console.error(error);
@@ -216,6 +223,7 @@ export function Contact() {
                     name="date"
                     ref={dateInputRef}
                     required
+                    min={new Date().toISOString().split('T')[0]}
                     value={formData.date}
                     onChange={handleChange}
                     className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:w-10 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
