@@ -3,11 +3,21 @@ import { Calendar, Clock, Mail, Send, Loader2 } from 'lucide-react';
 import { useState, useRef, useEffect, FormEvent, ChangeEvent } from 'react';
 import { googleSignIn, getAccessToken, initAuth } from '../lib/firebase';
 import { User } from 'firebase/auth';
-import { InlineWidget } from 'react-calendly';
+import { InlineWidget, useCalendlyEventListener } from 'react-calendly';
 
 export function Contact() {
   const dateInputRef = useRef<HTMLInputElement>(null);
   const timeInputRef = useRef<HTMLInputElement>(null);
+
+  interface ScheduledInterview {
+    id: string;
+    type: 'custom' | 'calendly';
+    date: string;
+    time: string;
+    name?: string;
+    email?: string;
+    meetLink?: string;
+  }
 
   const [bookingMethod, setBookingMethod] = useState<'custom' | 'calendly'>('custom');
   const [formData, setFormData] = useState({
@@ -20,6 +30,7 @@ export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
   const [user, setUser] = useState<User | null>(null);
+  const [localInterviews, setLocalInterviews] = useState<ScheduledInterview[]>([]);
   
   useEffect(() => {
     const unsubscribe = initAuth(
@@ -28,6 +39,41 @@ export function Contact() {
     );
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('scheduled_interviews');
+    if (saved) {
+      try {
+        setLocalInterviews(JSON.parse(saved));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  useCalendlyEventListener({
+    onEventScheduled: (e) => {
+      console.log('Calendly Event Scheduled:', e);
+      const today = new Date();
+      const eventDetails: ScheduledInterview = {
+        id: Date.now().toString(),
+        type: 'calendly',
+        date: today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+        time: today.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        name: 'Interview via Calendly',
+        email: 'Check your Calendly dashboard'
+      };
+
+      setLocalInterviews(prev => {
+        const updated = [eventDetails, ...prev];
+        localStorage.setItem('scheduled_interviews', JSON.stringify(updated));
+        return updated;
+      });
+
+      setStatusMsg("🎉 Your interview has been successfully scheduled on Calendly! Pratik will be notified.");
+      setTimeout(() => setStatusMsg(''), 15000);
+    }
+  });
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -126,6 +172,22 @@ export function Contact() {
       const calData = await calResponse.json();
       const meetLink = calData.hangoutLink;
 
+      const eventDetails: ScheduledInterview = {
+        id: Date.now().toString(),
+        type: 'custom',
+        date: formData.date,
+        time: formData.time,
+        name: formData.name,
+        email: formData.email,
+        meetLink: meetLink || ''
+      };
+
+      setLocalInterviews(prev => {
+        const updated = [eventDetails, ...prev];
+        localStorage.setItem('scheduled_interviews', JSON.stringify(updated));
+        return updated;
+      });
+
       setStatusMsg(`Meeting successfully scheduled! Meet Link: ${meetLink}`);
       setFormData({ name: '', email: '', date: '', time: '', message: '' });
       
@@ -179,6 +241,72 @@ export function Contact() {
             </button>
           </div>
         </motion.div>
+
+        {/* Scheduled Interviews Status Panel */}
+        {localInterviews.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mb-12 bg-teal-500/5 dark:bg-teal-500/10 border border-teal-500/20 p-6 rounded-2xl shadow-sm"
+          >
+            <div className="flex justify-between items-center mb-4 border-b border-teal-500/10 pb-3">
+              <h4 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2 text-base">
+                <Calendar className="w-5 h-5 text-teal-500" />
+                Your Scheduled Interviews & Sessions
+              </h4>
+              <button
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to clear your local interview list? This doesn't cancel actual appointments.")) {
+                    setLocalInterviews([]);
+                    localStorage.removeItem('scheduled_interviews');
+                  }
+                }}
+                className="text-xs text-red-500 hover:text-red-600 transition-colors"
+              >
+                Clear History
+              </button>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {localInterviews.map((item) => (
+                <div key={item.id} className="bg-white dark:bg-slate-950 p-4 rounded-xl border border-slate-100 dark:border-slate-800/80 flex flex-col justify-between shadow-sm">
+                  <div>
+                    <div className="flex justify-between items-start mb-2">
+                      <span className={`text-[10px] font-mono px-2.5 py-0.5 rounded-full font-semibold uppercase tracking-wider ${item.type === 'calendly' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-400' : 'bg-teal-100 text-teal-700 dark:bg-teal-950/50 dark:text-teal-400'}`}>
+                        {item.type === 'calendly' ? 'Calendly' : 'Custom Booking'}
+                      </span>
+                    </div>
+                    <p className="font-bold text-sm text-slate-900 dark:text-white mb-1">
+                      {item.name || 'Interview Session'}
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 truncate">
+                      {item.email}
+                    </p>
+                    <div className="space-y-1.5 border-t border-slate-50 dark:border-slate-900 pt-2.5">
+                      <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
+                        <Calendar className="w-4 h-4 text-teal-500 shrink-0" />
+                        <span>{item.date}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
+                        <Clock className="w-4 h-4 text-teal-500 shrink-0" />
+                        <span>{item.time}</span>
+                      </div>
+                    </div>
+                  </div>
+                  {item.meetLink && (
+                    <a
+                      href={item.meetLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 block text-center text-xs py-2 bg-teal-50 hover:bg-teal-100 dark:bg-teal-500/10 dark:hover:bg-teal-500/20 text-teal-600 dark:text-teal-400 font-semibold rounded-lg transition-colors border border-teal-100 dark:border-teal-500/20"
+                    >
+                      Join Google Meet
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
