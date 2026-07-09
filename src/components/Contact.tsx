@@ -1,8 +1,11 @@
 import { motion } from 'motion/react';
 import { Calendar, Clock, Mail, Send } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 export function Contact() {
+  const dateInputRef = useRef<HTMLInputElement>(null);
+  const timeInputRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -85,17 +88,27 @@ export function Contact() {
                   Proposed Date
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Calendar className="w-5 h-5 text-teal-500" />
+                  <div 
+                    className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer z-10"
+                    onClick={() => {
+                      try {
+                        dateInputRef.current?.showPicker();
+                      } catch (e) {
+                        dateInputRef.current?.focus();
+                      }
+                    }}
+                  >
+                    <Calendar className="w-5 h-5 text-teal-500 hover:text-teal-600 transition-colors" />
                   </div>
                   <input
                     type="date"
                     id="date"
                     name="date"
+                    ref={dateInputRef}
                     required
                     value={formData.date}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white appearance-none"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:w-10 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                   />
                 </div>
               </div>
@@ -104,17 +117,27 @@ export function Contact() {
                   Proposed Time
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Clock className="w-5 h-5 text-teal-500" />
+                  <div 
+                    className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer z-10"
+                    onClick={() => {
+                      try {
+                        timeInputRef.current?.showPicker();
+                      } catch (e) {
+                        timeInputRef.current?.focus();
+                      }
+                    }}
+                  >
+                    <Clock className="w-5 h-5 text-teal-500 hover:text-teal-600 transition-colors" />
                   </div>
                   <input
                     type="time"
                     id="time"
                     name="time"
+                    ref={timeInputRef}
                     required
                     value={formData.time}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white appearance-none"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:w-10 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                   />
                 </div>
               </div>
