@@ -9,6 +9,7 @@ import { Projects } from './components/Projects';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { AIAssistant } from './components/AIAssistant';
+import { BackToTop } from './components/BackToTop';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
       </main>
       <Footer />
       <AIAssistant />
+      <BackToTop />
     </div>
   );
 }

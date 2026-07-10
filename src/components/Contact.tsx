@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, FormEvent, ChangeEvent } from 'react';
 import { googleSignIn, getAccessToken, initAuth } from '../lib/firebase';
 import { User } from 'firebase/auth';
 import { InlineWidget, useCalendlyEventListener } from 'react-calendly';
+import DatePicker from 'react-datepicker';
 
 export function Contact() {
   const dateInputRef = useRef<HTMLInputElement>(null);
@@ -19,7 +20,7 @@ export function Contact() {
     meetLink?: string;
   }
 
-  const [bookingMethod, setBookingMethod] = useState<'custom' | 'calendly'>('custom');
+  const [bookingMethod, setBookingMethod] = useState<'custom' | 'calendly' | 'gmail'>('custom');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -99,16 +100,6 @@ export function Contact() {
         } else {
           throw new Error('Authentication failed');
         }
-      }
-
-      const confirmed = window.confirm(
-        `Are you sure you want to schedule this meeting on your Google Calendar and create a Google Sheet for notes?`
-      );
-      
-      if (!confirmed) {
-        setIsSubmitting(false);
-        setStatusMsg('');
-        return;
       }
 
       setStatusMsg('Creating Meeting Notes in Google Sheets...');
@@ -203,6 +194,61 @@ export function Contact() {
     }
   };
 
+  const handleSendEmail = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setStatusMsg('');
+
+    try {
+      let token = await getAccessToken();
+      if (!token) {
+        setStatusMsg('Please sign in with Google to send an email...');
+        const result = await googleSignIn();
+        if (result) {
+          token = result.accessToken;
+          setUser(result.user);
+        } else {
+          throw new Error('Authentication failed');
+        }
+      }
+
+      setStatusMsg('Sending email...');
+
+      const subject = `Message from ${formData.name} via Portfolio`;
+      const emailContent = `To: pratikkumarjena9@gmail.com\r\n` +
+        `Subject: ${subject}\r\n` +
+        `Content-Type: text/plain; charset="UTF-8"\r\n\r\n` +
+        `${formData.message}\n\nFrom: ${formData.name} (${formData.email})`;
+
+      const encodedMessage = btoa(unescape(encodeURIComponent(emailContent))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+      const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          raw: encodedMessage
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send email');
+      }
+
+      setStatusMsg('Email sent successfully! Pratik will get back to you soon.');
+      setFormData({ ...formData, message: '', name: '', email: '' });
+      setTimeout(() => setStatusMsg(''), 10000);
+
+    } catch (error) {
+      console.error(error);
+      setStatusMsg('An error occurred while sending the email. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let { name, value } = e.target;
     
@@ -243,7 +289,20 @@ export function Contact() {
             I'm currently seeking internships, full-time Data Analyst / Frontend Developer roles, freelance opportunities, and open-source collaborations. Use the form below to schedule an interview or just say hi!
           </p>
 
-          <div className="flex justify-center gap-4 mb-8">
+          <div className="flex justify-center gap-4 mb-10">
+            <a
+              href="mailto:pratikkumarjena9@gmail.com"
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-full font-medium transition-colors bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-sm"
+            >
+              <Mail className="w-5 h-5" />
+              Email Me Directly
+            </a>
+          </div>
+
+          <div className="flex justify-center items-center gap-4 mb-8 flex-wrap">
+            <span className="text-sm font-medium text-slate-500 dark:text-slate-400 w-full sm:w-auto mb-2 sm:mb-0">
+              Or schedule a meeting:
+            </span>
             <button
               onClick={() => setBookingMethod('custom')}
               className={`px-6 py-2 rounded-full font-medium transition-colors ${bookingMethod === 'custom' ? 'bg-teal-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
@@ -255,6 +314,12 @@ export function Contact() {
               className={`px-6 py-2 rounded-full font-medium transition-colors ${bookingMethod === 'calendly' ? 'bg-teal-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
             >
               Calendly
+            </button>
+            <button
+              onClick={() => setBookingMethod('gmail')}
+              className={`px-6 py-2 rounded-full font-medium transition-colors ${bookingMethod === 'gmail' ? 'bg-teal-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+            >
+              Send an Email
             </button>
           </div>
         </motion.div>
@@ -273,10 +338,8 @@ export function Contact() {
               </h4>
               <button
                 onClick={() => {
-                  if (window.confirm("Are you sure you want to clear your local interview list? This doesn't cancel actual appointments.")) {
-                    setLocalInterviews([]);
-                    localStorage.removeItem('scheduled_interviews');
-                  }
+                  setLocalInterviews([]);
+                  localStorage.removeItem('scheduled_interviews');
                 }}
                 className="text-xs text-red-500 hover:text-red-600 transition-colors"
               >
@@ -371,16 +434,41 @@ export function Contact() {
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center z-10 pointer-events-none">
                     <Calendar className="w-5 h-5 text-teal-500 transition-colors" />
                   </div>
-                  <input
-                    type="text"
-                    id="date"
-                    name="date"
-                    required
-                    pattern="\d{2}/\d{2}/\d{4}"
-                    placeholder="DD/MM/YYYY"
-                    value={formData.date}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white"
+                  <DatePicker
+                    wrapperClassName="w-full"
+                    selected={
+                      formData.date.length === 10
+                        ? new Date(
+                            parseInt(formData.date.substring(6, 10)),
+                            parseInt(formData.date.substring(3, 5)) - 1,
+                            parseInt(formData.date.substring(0, 2))
+                          )
+                        : null
+                    }
+                    onChange={(date: Date | null) => {
+                      if (date) {
+                        const day = date.getDate().toString().padStart(2, '0');
+                        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                        const year = date.getFullYear();
+                        setFormData({ ...formData, date: `${day}/${month}/${year}` });
+                      }
+                    }}
+                    minDate={new Date(2026, 0, 1)}
+                    maxDate={new Date(2026, 11, 31)}
+                    dateFormat="dd/MM/yyyy"
+                    customInput={
+                      <input
+                        type="text"
+                        id="date"
+                        name="date"
+                        required
+                        pattern="\d{2}/\d{2}/\d{4}"
+                        placeholder="DD/MM/YYYY"
+                        value={formData.date}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white"
+                      />
+                    }
                   />
                 </div>
               </div>
@@ -444,6 +532,72 @@ export function Contact() {
                   <Send className="w-5 h-5" />
                 )}
                 {isSubmitting ? 'Processing...' : 'Schedule Meeting'}
+              </button>
+              
+              {statusMsg && (
+                <div className="text-sm font-medium text-teal-600 dark:text-teal-400 text-center animate-pulse">
+                  {statusMsg}
+                </div>
+              )}
+            </div>
+          </form>
+          ) : bookingMethod === 'gmail' ? (
+          <form onSubmit={handleSendEmail} className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-8 rounded-2xl shadow-sm dark:shadow-none space-y-6 max-w-2xl mx-auto">
+            <div className="space-y-2">
+              <label htmlFor="gmail_name" className="text-sm font-medium text-slate-700 dark:text-slate-300">Your Name</label>
+              <input
+                type="text"
+                id="gmail_name"
+                name="name"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white"
+                placeholder="John Doe"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="gmail_email" className="text-sm font-medium text-slate-700 dark:text-slate-300">Your Email</label>
+              <input
+                type="email"
+                id="gmail_email"
+                name="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white"
+                placeholder="john@company.com"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="gmail_message" className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+                <Mail className="w-4 h-4 text-teal-500" />
+                Message
+              </label>
+              <textarea
+                id="gmail_message"
+                name="message"
+                rows={5}
+                required
+                value={formData.message}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white resize-none"
+                placeholder="What would you like to discuss?"
+              ></textarea>
+            </div>
+
+            <div className="pt-4 flex flex-col items-center gap-4">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-teal-500 hover:bg-teal-600 disabled:bg-teal-500/50 dark:bg-teal-500 dark:hover:bg-teal-400 dark:disabled:bg-teal-500/50 text-white dark:text-slate-950 font-medium rounded-lg transition-colors shadow-lg shadow-teal-500/20"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
+                {isSubmitting ? 'Sending...' : 'Send via Gmail'}
               </button>
               
               {statusMsg && (
