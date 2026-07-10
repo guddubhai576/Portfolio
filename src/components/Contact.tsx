@@ -80,9 +80,10 @@ export function Contact() {
     setIsSubmitting(true);
     setStatusMsg('');
     
-    const startDateTime = new Date(`${formData.date}T${formData.time}:00`);
-    if (startDateTime < new Date()) {
-      setStatusMsg('Please select a date and time in the future.');
+    const [day, month, year] = formData.date.split('/');
+    const startDateTime = new Date(`${year}-${month}-${day}T${formData.time}:00`);
+    if (isNaN(startDateTime.getTime()) || startDateTime < new Date()) {
+      setStatusMsg('Please select a valid date and time in the future (DD/MM/YYYY).');
       setIsSubmitting(false);
       return;
     }
@@ -136,13 +137,14 @@ export function Contact() {
       setStatusMsg('Scheduling Google Meet in Calendar...');
       
       // 2. Create Calendar Event with Meet Link
-      const startDateTime = new Date(`${formData.date}T${formData.time}:00`);
-      const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // 1 hour later
+      const [eventDay, eventMonth, eventYear] = formData.date.split('/');
+      const eventStartDateTime = new Date(`${eventYear}-${eventMonth}-${eventDay}T${formData.time}:00`);
+      const endDateTime = new Date(eventStartDateTime.getTime() + 60 * 60 * 1000); // 1 hour later
 
       const event = {
         summary: `Interview/Meeting: ${formData.name} & Pratik Kumar Jena`,
         description: `${formData.message}\n\nMeeting Notes Sheet: ${sheetUrl}`,
-        start: { dateTime: startDateTime.toISOString() },
+        start: { dateTime: eventStartDateTime.toISOString() },
         end: { dateTime: endDateTime.toISOString() },
         attendees: [
           { email: formData.email },
@@ -202,7 +204,22 @@ export function Contact() {
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let { name, value } = e.target;
+    
+    if (name === 'date') {
+      // Only allow digits and format as DD/MM/YYYY
+      const cleaned = value.replace(/\D/g, '');
+      let formatted = cleaned;
+      if (cleaned.length > 2) {
+        formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+      }
+      if (cleaned.length > 4) {
+        formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(4, 8)}`;
+      }
+      value = formatted;
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
 
@@ -351,28 +368,19 @@ export function Contact() {
                   Proposed Date
                 </label>
                 <div className="relative">
-                  <div 
-                    className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer z-10"
-                    onClick={() => {
-                      try {
-                        dateInputRef.current?.showPicker();
-                      } catch (e) {
-                        dateInputRef.current?.focus();
-                      }
-                    }}
-                  >
-                    <Calendar className="w-5 h-5 text-teal-500 hover:text-teal-600 transition-colors" />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center z-10 pointer-events-none">
+                    <Calendar className="w-5 h-5 text-teal-500 transition-colors" />
                   </div>
                   <input
-                    type="date"
+                    type="text"
                     id="date"
                     name="date"
-                    ref={dateInputRef}
                     required
-                    min={new Date().toISOString().split('T')[0]}
+                    pattern="\d{2}/\d{2}/\d{4}"
+                    placeholder="DD/MM/YYYY"
                     value={formData.date}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:left-0 [&::-webkit-calendar-picker-indicator]:w-10 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
