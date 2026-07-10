@@ -18,20 +18,22 @@ function TypeWriter() {
     let timeout: NodeJS.Timeout;
 
     if (isDeleting) {
-      timeout = setTimeout(() => {
-        setText(currentTitle.substring(0, text.length - 1));
-      }, 50);
+      if (text === '') {
+        setIsDeleting(false);
+        setTitleIndex((prev) => (prev + 1) % titles.length);
+      } else {
+        timeout = setTimeout(() => {
+          setText(currentTitle.substring(0, text.length - 1));
+        }, 50);
+      }
     } else {
-      timeout = setTimeout(() => {
-        setText(currentTitle.substring(0, text.length + 1));
-      }, 100);
-    }
-
-    if (!isDeleting && text === currentTitle) {
-      timeout = setTimeout(() => setIsDeleting(true), 2000);
-    } else if (isDeleting && text === '') {
-      setIsDeleting(false);
-      setTitleIndex((prev) => (prev + 1) % titles.length);
+      if (text === currentTitle) {
+        timeout = setTimeout(() => setIsDeleting(true), 2000);
+      } else {
+        timeout = setTimeout(() => {
+          setText(currentTitle.substring(0, text.length + 1));
+        }, 100);
+      }
     }
 
     return () => clearTimeout(timeout);
