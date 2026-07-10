@@ -3,15 +3,34 @@ import { motion } from 'motion/react';
 const skillCategories = [
   {
     title: "Languages & Querying",
-    skills: ["Python", "SQL", "C/C++", "HTML5", "CSS3", "JavaScript"]
+    skills: [
+      { name: "Python", level: 90 },
+      { name: "SQL", level: 85 },
+      { name: "C/C++", level: 75 },
+      { name: "HTML5", level: 95 },
+      { name: "CSS3", level: 90 },
+      { name: "JavaScript", level: 85 }
+    ]
   },
   {
     title: "Analytics & Machine Learning",
-    skills: ["Pandas", "NumPy", "TensorFlow", "Power BI", "Scikit-Learn"]
+    skills: [
+      { name: "Pandas", level: 90 },
+      { name: "NumPy", level: 85 },
+      { name: "TensorFlow", level: 70 },
+      { name: "Power BI", level: 80 },
+      { name: "Scikit-Learn", level: 75 }
+    ]
   },
   {
     title: "Visualization & Frameworks",
-    skills: ["React", "Streamlit", "Matplotlib", "Tailwind CSS", "Git"]
+    skills: [
+      { name: "React", level: 80 },
+      { name: "Streamlit", level: 85 },
+      { name: "Matplotlib", level: 90 },
+      { name: "Tailwind CSS", level: 85 },
+      { name: "Git", level: 90 }
+    ]
   }
 ];
 
@@ -41,14 +60,23 @@ export function Skills() {
                 className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-sm dark:shadow-none"
               >
                 <h3 className="text-lg font-display font-semibold text-slate-900 dark:text-white mb-6 text-center">{category.title}</h3>
-                <div className="flex flex-wrap gap-3 justify-center">
-                  {category.skills.map(skill => (
-                    <span 
-                      key={skill} 
-                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 text-sm font-medium rounded-md border border-slate-200 dark:border-slate-700/50"
-                    >
-                      {skill}
-                    </span>
+                <div className="flex flex-col gap-4">
+                  {category.skills.map((skill, skillIdx) => (
+                    <div key={skill.name} className="space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="font-medium text-slate-700 dark:text-slate-300">{skill.name}</span>
+                        <span className="text-slate-500 dark:text-slate-500 text-xs">{skill.level}%</span>
+                      </div>
+                      <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${skill.level}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, delay: 0.2 + (skillIdx * 0.1) }}
+                          className="h-full bg-teal-500 rounded-full"
+                        />
+                      </div>
+                    </div>
                   ))}
                 </div>
               </motion.div>
