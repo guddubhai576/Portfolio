@@ -5,8 +5,8 @@ const educationList = [
     degree: "B.Tech in Computer Science and Engineering",
     specialization: "AI & Machine Learning",
     institution: "Trident Academy of Technology, Bhubaneswar",
-    duration: "Expected 2026",
-    description: "Currently pursuing B.Tech with a focus on Artificial Intelligence and Machine Learning. Active in building data-driven projects and participating in technical events."
+    duration: "Graduated 2026",
+    description: "Graduated with a B.Tech in Computer Science and Engineering, specializing in Artificial Intelligence & Machine Learning. Built data-driven projects and actively participated in technical events to strengthen practical and problem-solving skills."
   }
 ];
 
