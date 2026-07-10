@@ -1,5 +1,48 @@
 import { motion } from 'motion/react';
 import { Github, Linkedin, Mail, ChevronDown, Download } from 'lucide-react';
+import { useState, useEffect } from 'react';
+
+const titles = [
+  "Data Analyst",
+  "Frontend Developer",
+  "AI & ML Enthusiast"
+];
+
+function TypeWriter() {
+  const [text, setText] = useState('');
+  const [titleIndex, setTitleIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentTitle = titles[titleIndex];
+    let timeout: NodeJS.Timeout;
+
+    if (isDeleting) {
+      timeout = setTimeout(() => {
+        setText(currentTitle.substring(0, text.length - 1));
+      }, 50);
+    } else {
+      timeout = setTimeout(() => {
+        setText(currentTitle.substring(0, text.length + 1));
+      }, 100);
+    }
+
+    if (!isDeleting && text === currentTitle) {
+      timeout = setTimeout(() => setIsDeleting(true), 2000);
+    } else if (isDeleting && text === '') {
+      setIsDeleting(false);
+      setTitleIndex((prev) => (prev + 1) % titles.length);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [text, isDeleting, titleIndex]);
+
+  return (
+    <span className="inline-block min-w-[20px] font-mono text-teal-600 dark:text-teal-400">
+      {text}<span className="animate-[pulse_1s_ease-in-out_infinite] font-light">|</span>
+    </span>
+  );
+}
 
 export function Hero() {
   return (
@@ -29,7 +72,7 @@ export function Hero() {
               </span>
             </h1>
             <p className="text-xl text-slate-600 dark:text-slate-400 max-w-lg font-light leading-relaxed">
-              Data Analyst | Frontend Developer | AI & ML Enthusiast
+              <TypeWriter />
             </p>
           </div>
 
