@@ -1,6 +1,9 @@
 import { motion } from 'motion/react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { useState } from 'react';
+import { db } from '../lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { handleFirestoreError, OperationType } from '../lib/firestoreError';
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -14,16 +17,31 @@ export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    
+    try {
+      const payload: any = {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        createdAt: serverTimestamp()
+      };
+      
+      if (formData.date) payload.date = formData.date;
+      if (formData.time) payload.time = formData.time;
+
+      await addDoc(collection(db, 'contactMessages'), payload);
+      
       setSubmitted(true);
       setFormData({ name: '', email: '', date: '', time: '', message: '' });
       setTimeout(() => setSubmitted(false), 3000);
-    }, 1000);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, 'contactMessages');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

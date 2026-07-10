@@ -1,5 +1,7 @@
 import { motion } from 'motion/react';
-import { FolderGit2, ExternalLink, Github } from 'lucide-react';
+import { FolderGit2, ExternalLink, Github, BarChart3 } from 'lucide-react';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
+import { useMemo } from 'react';
 
 const projects = [
   {
@@ -53,6 +55,20 @@ const projects = [
 ];
 
 export function Projects() {
+  const techData = useMemo(() => {
+    const techDistribution: Record<string, number> = {};
+    projects.forEach(project => {
+      project.tech.forEach(tech => {
+        techDistribution[tech] = (techDistribution[tech] || 0) + 1;
+      });
+    });
+    return Object.entries(techDistribution)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+  }, []);
+
+  const COLORS = ['#0d9488', '#14b8a6', '#2dd4bf', '#5eead4', '#99f6e4', '#ccfbf1'];
+
   return (
     <section id="projects" className="py-24 px-6 relative bg-slate-100/50 dark:bg-slate-900/20 transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
@@ -67,7 +83,7 @@ export function Projects() {
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-4"></div>
           </h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
             {projects.map((project, idx) => (
               <motion.div 
                 key={project.title}
@@ -123,6 +139,70 @@ export function Projects() {
               </motion.div>
             ))}
           </div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm dark:shadow-none"
+          >
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-3 bg-teal-100 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-xl">
+                <BarChart3 className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-display font-semibold text-slate-900 dark:text-white">
+                Tech Stack Distribution
+              </h3>
+            </div>
+            
+            <div className="h-[400px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={techData}
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 20,
+                    bottom: 60,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.1} vertical={false} />
+                  <XAxis 
+                    dataKey="name" 
+                    angle={-45} 
+                    textAnchor="end" 
+                    height={80} 
+                    tick={{ fill: '#64748b', fontSize: 12 }} 
+                    axisLine={{ stroke: '#cbd5e1', opacity: 0.2 }}
+                    tickLine={false}
+                  />
+                  <YAxis 
+                    tick={{ fill: '#64748b', fontSize: 12 }} 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tickCount={5}
+                  />
+                  <Tooltip 
+                    cursor={{ fill: '#f1f5f9', opacity: 0.1 }}
+                    contentStyle={{ 
+                      backgroundColor: '#1e293b', 
+                      border: 'none', 
+                      borderRadius: '8px',
+                      color: '#f8fafc',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                    }}
+                    itemStyle={{ color: '#2dd4bf' }}
+                  />
+                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                    {techData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

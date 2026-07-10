@@ -1,4 +1,44 @@
 {
-  "entities": {},
-  "firestore": {}
+  "entities": {
+    "ContactMessage": {
+      "title": "ContactMessage",
+      "description": "A message submitted through the contact form.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "time": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["name", "email", "message", "createdAt"]
+    }
+  },
+  "firestore": {
+    "contactMessages": {
+      "schema": {
+        "$ref": "#/entities/ContactMessage"
+      },
+      "description": "Stores contact messages."
+    }
+  }
 }
