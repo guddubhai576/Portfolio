@@ -46,11 +46,11 @@ export function Navbar() {
 
   return (
     <header 
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      className={`fixed top-0 w-full z-50 transition-all duration-300 px-6 ${
         isScrolled ? 'bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 py-4' : 'bg-transparent py-6'
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto w-full flex items-center justify-between">
         <a href="#home" className="text-xl font-display font-bold text-slate-900 dark:text-white tracking-tighter">
           PKJ<span className="text-teal-500 dark:text-teal-400">.</span>
         </a>

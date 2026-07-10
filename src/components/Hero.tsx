@@ -6,7 +6,7 @@ export function Hero() {
     <section id="home" className="min-h-screen flex items-center justify-center pt-20 relative px-6 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-500/10 via-slate-50 to-slate-50 dark:from-teal-900/20 dark:via-slate-950 dark:to-slate-950 -z-10 transition-colors duration-300" />
       
-      <div className="max-w-5xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
