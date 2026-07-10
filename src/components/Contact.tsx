@@ -5,6 +5,8 @@ import { db } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/firestoreError';
 
+import { MapAssistant } from './MapAssistant';
+
 export function Contact() {
   const [formData, setFormData] = useState({
     name: '',
@@ -115,6 +117,8 @@ export function Contact() {
                 </p>
               </div>
             </div>
+
+            <MapAssistant />
           </motion.div>
 
           <motion.div

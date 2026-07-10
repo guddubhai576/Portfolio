@@ -77,6 +77,56 @@ Here is some context about Pratik:
     }
   });
 
+  app.post("/api/gemini/maps", async (req, res) => {
+    try {
+      const { prompt, lat, lng } = req.body;
+      const { GoogleGenAI } = await import('@google/genai');
+      const ai = new GoogleGenAI({
+        apiKey: process.env.GEMINI_API_KEY,
+        httpOptions: {
+          headers: {
+            'User-Agent': 'aistudio-build',
+          }
+        }
+      });
+      
+      const config: any = {
+        tools: [{ googleMaps: {} }]
+      };
+      
+      if (lat && lng) {
+        config.toolConfig = {
+          retrievalConfig: {
+            latLng: {
+              latitude: parseFloat(lat),
+              longitude: parseFloat(lng)
+            }
+          }
+        };
+      }
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt || "What is in Bhubaneswar?",
+        config
+      });
+      
+      // Extract links if any
+      const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+      const places = chunks
+        .filter((c: any) => c.web?.uri || c.maps?.uri)
+        .map((c: any) => ({
+          title: c.web?.title || c.maps?.title || 'Location',
+          uri: c.web?.uri || c.maps?.uri
+        }));
+
+      res.json({ response: response.text, places });
+    } catch (error) {
+      console.error('Maps AI error:', error);
+      res.status(500).json({ error: 'Failed to process maps query' });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
