@@ -3,11 +3,8 @@ async function test() {
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-pro-preview",
-      contents: "hello",
-      config: {
-        thinkingConfig: { thinkingLevel: 'HIGH' }
-      }
+      model: "gemini-3.5-flash",
+      contents: "hello"
     });
     console.log(response.text);
   } catch (e) {

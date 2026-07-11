@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, X, Send, Bot, User, Loader2, Network } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User, Loader2 } from 'lucide-react';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -94,10 +94,7 @@ export function AIAssistant() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Pratik's AI</h3>
-                  <p className="text-xs text-teal-600 dark:text-teal-400 flex items-center gap-1 font-medium">
-                    <Network className="w-3 h-3" />
-                    Deep Thinking Enabled
-                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Powered by Gemini</p>
                 </div>
               </div>
               <button

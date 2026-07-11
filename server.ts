@@ -58,11 +58,10 @@ Here is some context about Pratik:
         : message;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.1-pro-preview",
+        model: "gemini-3.5-flash",
         contents: fullMessage,
         config: { 
-          systemInstruction,
-          thinkingConfig: { thinkingLevel: "HIGH" }
+          systemInstruction
         }
       });
       
@@ -91,8 +90,7 @@ Here is some context about Pratik:
       });
       
       const config: any = {
-        tools: [{ googleMaps: {} }],
-        thinkingConfig: { thinkingLevel: "HIGH" }
+        tools: [{ googleMaps: {} }]
       };
       
       if (lat && lng) {
@@ -107,7 +105,7 @@ Here is some context about Pratik:
       }
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.1-pro-preview",
+        model: "gemini-3.5-flash",
         contents: prompt || "What is in Bhubaneswar?",
         config
       });
