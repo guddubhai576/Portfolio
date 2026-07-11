@@ -88,8 +88,11 @@ export function Contact() {
               </div>
               <div>
                 <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Email</h4>
-                <a href="mailto:pratikkumarjena04@gmail.com" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+                <a href="mailto:pratikkumarjena04@gmail.com" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors block mb-3">
                   pratikkumarjena04@gmail.com
+                </a>
+                <a href="mailto:pratikkumarjena04@gmail.com" className="contact-btn inline-flex items-center justify-center px-5 py-2 bg-teal-500 hover:bg-teal-600 dark:bg-teal-500 dark:hover:bg-teal-400 text-white dark:text-slate-950 text-sm font-medium rounded-xl transition-all duration-300 shadow-lg shadow-teal-500/20">
+                  Email Me
                 </a>
               </div>
             </div>

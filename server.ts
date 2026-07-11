@@ -43,13 +43,6 @@ Here is some context about Pratik:
 - He has skills in Python, JavaScript, TypeScript, React, SQL, HTML, CSS, Tailwind CSS, Data Analysis, Machine Learning.
 - He is seeking internships, full-time Data Analyst / Frontend Developer roles.`;
 
-      const chat = ai.chats.create({
-        model: "gemini-3.5-flash",
-        config: {
-          systemInstruction,
-        }
-      });
-      
       // Replay history
       if (Array.isArray(history) && history.length > 0) {
         for (const msg of history) {
@@ -65,15 +58,22 @@ Here is some context about Pratik:
         : message;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-3.1-pro-preview",
         contents: fullMessage,
-        config: { systemInstruction }
+        config: { 
+          systemInstruction,
+          thinkingConfig: { thinkingLevel: "HIGH" }
+        }
       });
       
       res.json({ response: response.text });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Chat error:', error);
-      res.status(500).json({ error: 'Failed to process chat message' });
+      if (error?.status === 429 || (error?.message && error.message.includes('429')) || (error?.message && error.message.includes('quota'))) {
+        res.status(429).json({ error: "API Quota Exceeded for this model. Please try again later or upgrade your plan." });
+      } else {
+        res.status(500).json({ error: 'Failed to process chat message' });
+      }
     }
   });
 
@@ -91,7 +91,8 @@ Here is some context about Pratik:
       });
       
       const config: any = {
-        tools: [{ googleMaps: {} }]
+        tools: [{ googleMaps: {} }],
+        thinkingConfig: { thinkingLevel: "HIGH" }
       };
       
       if (lat && lng) {
@@ -106,7 +107,7 @@ Here is some context about Pratik:
       }
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-3.1-pro-preview",
         contents: prompt || "What is in Bhubaneswar?",
         config
       });
