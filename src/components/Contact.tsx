@@ -41,10 +41,10 @@ export function Contact() {
 
       // Send email via EmailJS
       const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_p7hywwn';
-      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_default'; // Replace with your template ID
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || ''; // Replace with your public key
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_default'; 
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'default_public_key'; 
       
-      if (publicKey) {
+      try {
         await emailjs.send(
           serviceId,
           templateId,
@@ -57,8 +57,9 @@ export function Contact() {
           },
           publicKey
         );
-      } else {
-        console.warn('EmailJS public key is missing. Message saved to Firestore but email not sent.');
+      } catch (emailError) {
+        console.error('EmailJS Error:', emailError);
+        // We still set submitted to true because it saved to Firestore
       }
       
       setSubmitted(true);
