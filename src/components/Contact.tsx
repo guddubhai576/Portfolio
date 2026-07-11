@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import { db } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/firestoreError';
@@ -24,6 +25,7 @@ export function Contact() {
     setIsSubmitting(true);
     
     try {
+      // Create payload for Firestore
       const payload: any = {
         name: formData.name,
         email: formData.email,
@@ -34,7 +36,30 @@ export function Contact() {
       if (formData.date) payload.date = formData.date;
       if (formData.time) payload.time = formData.time;
 
+      // Save to Firestore
       await addDoc(collection(db, 'contactMessages'), payload);
+
+      // Send email via EmailJS
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_p7hywwn';
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_default'; // Replace with your template ID
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || ''; // Replace with your public key
+      
+      if (publicKey) {
+        await emailjs.send(
+          serviceId,
+          templateId,
+          {
+            from_name: formData.name,
+            reply_to: formData.email,
+            message: formData.message,
+            date: formData.date,
+            time: formData.time
+          },
+          publicKey
+        );
+      } else {
+        console.warn('EmailJS public key is missing. Message saved to Firestore but email not sent.');
+      }
       
       setSubmitted(true);
       setFormData({ name: '', email: '', date: '', time: '', message: '' });
@@ -200,7 +225,7 @@ export function Contact() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`flex-1 w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 ${
+                  className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 ${
                     submitted 
                       ? 'bg-green-500 hover:bg-green-600'
                       : 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-500 dark:hover:bg-teal-400 dark:text-slate-950'
@@ -217,12 +242,6 @@ export function Contact() {
                     </>
                   )}
                 </button>
-                <a 
-                  href="mailto:pratikkumarjena04@gmail.com" 
-                  className="contact-btn flex-1 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-medium rounded-xl transition-all duration-300 shadow-lg shadow-slate-900/10 dark:shadow-white/10"
-                >
-                  Email Me
-                </a>
               </div>
             </form>
           </motion.div>
