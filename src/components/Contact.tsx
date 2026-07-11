@@ -88,11 +88,8 @@ export function Contact() {
               </div>
               <div>
                 <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Email</h4>
-                <a href="mailto:pratikkumarjena04@gmail.com" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors block mb-3">
+                <a href="mailto:pratikkumarjena04@gmail.com" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   pratikkumarjena04@gmail.com
-                </a>
-                <a href="mailto:pratikkumarjena04@gmail.com" className="contact-btn inline-flex items-center justify-center px-5 py-2 bg-teal-500 hover:bg-teal-600 dark:bg-teal-500 dark:hover:bg-teal-400 text-white dark:text-slate-950 text-sm font-medium rounded-xl transition-all duration-300 shadow-lg shadow-teal-500/20">
-                  Email Me
                 </a>
               </div>
             </div>
@@ -199,26 +196,34 @@ export function Contact() {
                   placeholder="How can I help you?"
                 ></textarea>
               </div>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 ${
-                  submitted 
-                    ? 'bg-green-500 hover:bg-green-600'
-                    : 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-500 dark:hover:bg-teal-400 dark:text-slate-950'
-                } shadow-lg ${submitted ? 'shadow-green-500/20' : 'shadow-teal-500/20'} disabled:opacity-70 disabled:cursor-not-allowed`}
-              >
-                {isSubmitting ? (
-                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : submitted ? (
-                  'Message Sent Successfully!'
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    Send Message
-                  </>
-                )}
-              </button>
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`flex-1 w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 ${
+                    submitted 
+                      ? 'bg-green-500 hover:bg-green-600'
+                      : 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-500 dark:hover:bg-teal-400 dark:text-slate-950'
+                  } shadow-lg ${submitted ? 'shadow-green-500/20' : 'shadow-teal-500/20'} disabled:opacity-70 disabled:cursor-not-allowed`}
+                >
+                  {isSubmitting ? (
+                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : submitted ? (
+                    'Message Sent Successfully!'
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Send Message
+                    </>
+                  )}
+                </button>
+                <a 
+                  href="mailto:pratikkumarjena04@gmail.com" 
+                  className="contact-btn flex-1 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-medium rounded-xl transition-all duration-300 shadow-lg shadow-slate-900/10 dark:shadow-white/10"
+                >
+                  Email Me
+                </a>
+              </div>
             </form>
           </motion.div>
         </div>
