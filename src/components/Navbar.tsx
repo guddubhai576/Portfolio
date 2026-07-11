@@ -71,10 +71,26 @@ export function Navbar() {
           
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="relative p-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center overflow-hidden"
             aria-label="Toggle theme"
           >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            <motion.div
+              initial={false}
+              animate={{ rotate: isDark ? 90 : 0, scale: isDark ? 0 : 1, opacity: isDark ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
+              className="absolute"
+            >
+              <Moon className="w-5 h-5" />
+            </motion.div>
+            <motion.div
+              initial={false}
+              animate={{ rotate: isDark ? 0 : -90, scale: isDark ? 1 : 0, opacity: isDark ? 1 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute"
+            >
+              <Sun className="w-5 h-5" />
+            </motion.div>
+            <div className="w-5 h-5 opacity-0" />
           </button>
         </div>
 
@@ -82,10 +98,26 @@ export function Navbar() {
         <div className="md:hidden flex items-center gap-4">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="relative p-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center overflow-hidden"
             aria-label="Toggle theme"
           >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            <motion.div
+              initial={false}
+              animate={{ rotate: isDark ? 90 : 0, scale: isDark ? 0 : 1, opacity: isDark ? 0 : 1 }}
+              transition={{ duration: 0.2 }}
+              className="absolute"
+            >
+              <Moon className="w-5 h-5" />
+            </motion.div>
+            <motion.div
+              initial={false}
+              animate={{ rotate: isDark ? 0 : -90, scale: isDark ? 1 : 0, opacity: isDark ? 1 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute"
+            >
+              <Sun className="w-5 h-5" />
+            </motion.div>
+            <div className="w-5 h-5 opacity-0" />
           </button>
           <button 
             className="text-slate-600 dark:text-slate-300"
