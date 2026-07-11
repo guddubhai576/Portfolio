@@ -31,29 +31,24 @@ export function Footer() {
       try {
         const statRef = doc(db, 'siteStats', 'global');
         
-        // Use local storage to prevent incrementing multiple times per session
         const hasVisited = localStorage.getItem('has_visited');
+        const docSnap = await getDoc(statRef);
         
         if (!hasVisited) {
-          try {
+          if (docSnap.exists()) {
             await updateDoc(statRef, {
               visits: increment(1)
             });
-            localStorage.setItem('has_visited', 'true');
-          } catch (updateError: any) {
-            if (updateError.code === 'not-found') {
-              await setDoc(statRef, { visits: 1 });
-              localStorage.setItem('has_visited', 'true');
-            } else {
-              console.error('Error updating visits:', updateError);
-            }
+          } else {
+            await setDoc(statRef, { visits: 1 });
           }
+          localStorage.setItem('has_visited', 'true');
         }
         
-        // Fetch current count
-        const docSnap = await getDoc(statRef);
-        if (docSnap.exists()) {
-          setVisitorCount(docSnap.data().visits);
+        // Fetch current count after possible update
+        const updatedSnap = await getDoc(statRef);
+        if (updatedSnap.exists()) {
+          setVisitorCount(updatedSnap.data().visits);
         }
       } catch (error) {
         console.error('Error tracking visitor:', error);
