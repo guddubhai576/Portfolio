@@ -1,13 +1,14 @@
-import { motion } from 'motion/react';
-import { FolderGit2, ExternalLink, Github, BarChart3 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { FolderGit2, ExternalLink, Github, BarChart3, Filter } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 const projects = [
   {
     title: "Portfolio Analytics Dashboard",
     description: "Architect and deliver a production-grade, fully customisable portfolio analytics dashboard – replicating the sophistication of institutional platforms like Bloomberg Terminal.",
     tech: ["React", "Analytics", "Frontend"],
+    category: "Frontend",
     image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032/Project-1C-Front-End-Developer-Portfolio-Analytics-Dashboard",
     demo: "https://project-1-c-front-end-developer-por.vercel.app"
@@ -16,6 +17,7 @@ const projects = [
     title: "Real-Time Stock Screener",
     description: "Design, build, and deliver a production-grade real-time stock screener application – a direct competitor to Screener.in and Finviz.",
     tech: ["React", "Finance", "Frontend"],
+    category: "Frontend",
     image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032/Project-1A-Front-End-Developer-Real-Time-Stock-Screener",
     demo: "https://project-1-a-front-end-developer-rea-alpha.vercel.app"
@@ -24,6 +26,7 @@ const projects = [
     title: "Positive Quote Generator",
     description: "A positive quote is a short yet powerful statement that inspires optimism, boosts confidence, and uplifts the spirit.",
     tech: ["Web Tech", "API", "Frontend"],
+    category: "Frontend",
     image: "https://images.unsplash.com/photo-1499744937866-d7e566a20a61?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032/positive-quote",
     demo: "https://positive-quote.vercel.app"
@@ -32,6 +35,7 @@ const projects = [
     title: "Multi-Step Loan Form",
     description: "Build a production-grade, 8+ step multi-step loan application form with real-time validation, conditional field rendering, and document upload.",
     tech: ["Frontend", "Forms", "Validation"],
+    category: "Frontend",
     image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032/Project-1B-Front-End-Developer-Multi-Step-Loan-Application-Form",
     demo: null
@@ -40,6 +44,7 @@ const projects = [
     title: "Deepfake Analysis using CNN",
     description: "Deep learning model utilizing MobileNetV2 and CNN architectures to accurately detect and classify manipulated media.",
     tech: ["Python", "TensorFlow", "CNN", "MobileNetV2"],
+    category: "Data Analysis",
     image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032/mobilenetv2-project",
     demo: null
@@ -48,13 +53,21 @@ const projects = [
     title: "AI Resume Analyzer",
     description: "Interactive application that parses resumes, analyzes skill sets, and generates custom portfolio dashboards.",
     tech: ["Python", "Streamlit", "HTML/CSS"],
+    category: "Data Analysis",
     image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032",
     demo: null
   }
 ];
 
+const categories = ["All", ...new Set(projects.map(p => p.category))];
+
 export function Projects() {
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  const filteredProjects = projects.filter(
+    (p) => activeCategory === "All" || p.category === activeCategory
+  );
   const techData = useMemo(() => {
     const techDistribution: Record<string, number> = {};
     projects.forEach(project => {
@@ -83,14 +96,36 @@ export function Projects() {
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-4"></div>
           </h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-            {projects.map((project, idx) => (
+          <div className="flex flex-wrap items-center gap-3 mb-10">
+            <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mr-2">
+              <Filter className="w-4 h-4" />
+              <span className="text-sm font-medium">Filter:</span>
+            </div>
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  activeCategory === category
+                    ? "bg-teal-600 text-white shadow-sm border border-teal-600"
+                    : "bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50 hover:border-teal-400 dark:hover:border-teal-500/50 hover:text-teal-600 dark:hover:text-teal-400"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+            <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project, idx) => (
               <motion.div 
                 key={project.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
                 className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full hover:-translate-y-2 hover:border-teal-400 dark:hover:border-teal-500/50 transition-all duration-300 group shadow-sm dark:shadow-none"
               >
                 <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
@@ -138,7 +173,8 @@ export function Projects() {
                 </div>
               </motion.div>
             ))}
-          </div>
+            </AnimatePresence>
+          </motion.div>
           
           <motion.div
             initial={{ opacity: 0, y: 20 }}
