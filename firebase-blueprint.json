@@ -23,7 +23,7 @@
         },
         "message": {
           "type": "string",
-          "maxLength": 2000
+          "maxLength": 10000
         },
         "createdAt": {
           "type": "string",
@@ -31,6 +31,18 @@
         }
       },
       "required": ["name", "email", "message", "createdAt"]
+    },
+    "SiteStat": {
+      "title": "SiteStat",
+      "description": "Global statistics for the site.",
+      "type": "object",
+      "properties": {
+        "visits": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["visits"]
     }
   },
   "firestore": {
@@ -39,6 +51,12 @@
         "$ref": "#/entities/ContactMessage"
       },
       "description": "Stores contact messages."
+    },
+    "siteStats": {
+      "schema": {
+        "$ref": "#/entities/SiteStat"
+      },
+      "description": "Stores global site statistics such as visitor count."
     }
   }
 }

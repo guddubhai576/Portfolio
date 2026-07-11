@@ -1,4 +1,7 @@
-import { Github, Linkedin, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Github, Linkedin, Facebook, Instagram, Twitter, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { db } from '../lib/firebase';
+import { doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
 
 function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -21,6 +24,45 @@ function WhatsAppIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function Footer() {
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    async function trackVisitor() {
+      try {
+        const statRef = doc(db, 'siteStats', 'global');
+        
+        // Use local storage to prevent incrementing multiple times per session
+        const hasVisited = localStorage.getItem('has_visited');
+        
+        if (!hasVisited) {
+          try {
+            await updateDoc(statRef, {
+              visits: increment(1)
+            });
+            localStorage.setItem('has_visited', 'true');
+          } catch (updateError: any) {
+            if (updateError.code === 'not-found') {
+              await setDoc(statRef, { visits: 1 });
+              localStorage.setItem('has_visited', 'true');
+            } else {
+              console.error('Error updating visits:', updateError);
+            }
+          }
+        }
+        
+        // Fetch current count
+        const docSnap = await getDoc(statRef);
+        if (docSnap.exists()) {
+          setVisitorCount(docSnap.data().visits);
+        }
+      } catch (error) {
+        console.error('Error tracking visitor:', error);
+      }
+    }
+    
+    trackVisitor();
+  }, []);
+
   return (
     <footer className="py-12 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-6 flex flex-col items-center gap-6">
@@ -83,6 +125,13 @@ export function Footer() {
         <p className="text-slate-600 dark:text-slate-500 text-sm">
           © {new Date().getFullYear()} Pratik Kumar Jena. Built with React & Tailwind.
         </p>
+        
+        {visitorCount !== null && (
+          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm bg-slate-100 dark:bg-slate-900 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-800">
+            <Users className="w-4 h-4" />
+            <span><span className="font-semibold text-slate-900 dark:text-white">{visitorCount.toLocaleString()}</span> visitors</span>
+          </div>
+        )}
       </div>
     </footer>
   );

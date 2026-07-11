@@ -14,10 +14,24 @@ service cloud.firestore {
         data.size() >= 4 && data.size() <= 6 &&
         data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
         data.email is string && data.email.size() > 0 && data.email.size() <= 255 &&
-        data.message is string && data.message.size() > 0 && data.message.size() <= 2000 &&
+        data.message is string && data.message.size() > 0 && data.message.size() <= 10000 &&
         (!('date' in data) || (data.date is string && data.date.size() <= 20)) &&
         (!('time' in data) || (data.time is string && data.time.size() <= 20)) &&
         data.createdAt == request.time;
+    }
+
+    function isValidSiteStat(data) {
+      return data.keys().hasAll(['visits']) &&
+        data.size() == 1 &&
+        data.visits is int && data.visits >= 0;
+    }
+
+    match /siteStats/{statId} {
+      allow read: if true;
+      allow create: if isValidId(statId) && isValidSiteStat(request.resource.data);
+      allow update: if isValidId(statId) && isValidSiteStat(request.resource.data) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visits']) &&
+        request.resource.data.visits == resource.data.visits + 1;
     }
 
     match /contactMessages/{messageId} {
