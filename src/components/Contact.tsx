@@ -5,7 +5,7 @@ import { db } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from '../lib/firestoreError';
 
-import { MapAssistant } from './MapAssistant';
+import { IndiaMap } from './IndiaMap';
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -118,7 +118,9 @@ export function Contact() {
               </div>
             </div>
 
-            <MapAssistant />
+            <div className="mt-8">
+              <IndiaMap />
+            </div>
           </motion.div>
 
           <motion.div
@@ -217,6 +219,7 @@ export function Contact() {
             </form>
           </motion.div>
         </div>
+
       </div>
     </section>
   );
