@@ -128,8 +128,8 @@ export function Contact() {
               </div>
               <div>
                 <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Email</h4>
-                <a href="mailto:pratikkumarjena9@gmail.com" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
-                  pratikkumarjena9@gmail.com
+                <a href="mailto:pratikkumarjena04@gmail.com" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+                  pratikkumarjena04@gmail.com
                 </a>
               </div>
             </div>

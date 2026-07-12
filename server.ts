@@ -126,6 +126,22 @@ Here is some context about Pratik:
     }
   });
 
+  app.get("/api/github/stats", async (req, res) => {
+    try {
+      const userResponse = await fetch("https://api.github.com/users/pratik04032", {
+        headers: { "User-Agent": "Portfolio-App" }
+      });
+      if (!userResponse.ok) {
+        throw new Error("Failed to fetch from GitHub API");
+      }
+      const userData = await userResponse.json();
+      res.json(userData);
+    } catch (error) {
+      console.error("GitHub API error:", error);
+      res.status(500).json({ error: "Failed to fetch GitHub stats" });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

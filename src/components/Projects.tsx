@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { FolderGit2, ExternalLink, Github, BarChart3, Filter } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 const projects = [
   {
@@ -66,6 +66,30 @@ const categories = ["All", ...new Set(projects.map(p => p.category))];
 export function Projects() {
   const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState("All");
+  const [isLoading, setIsLoading] = useState(true);
+  const [statsLoaded, setStatsLoaded] = useState(false);
+  const [githubStats, setGithubStats] = useState<any>(null);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [activeCategory]);
+
+  useEffect(() => {
+    fetch('/api/github/stats')
+      .then(res => res.json())
+      .then(data => {
+        setGithubStats(data);
+        setStatsLoaded(true);
+      })
+      .catch(err => {
+        console.error("Failed to load GitHub stats:", err);
+        setStatsLoaded(true);
+      });
+  }, []);
 
   const filteredProjects = projects.filter(
     (p) => activeCategory === "All" || p.category === activeCategory
@@ -106,7 +130,11 @@ export function Projects() {
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => {
+                  if (category !== activeCategory) {
+                    setActiveCategory(category);
+                  }
+                }}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeCategory === category
                     ? "bg-teal-600 text-white shadow-sm border border-teal-600"
@@ -120,61 +148,86 @@ export function Projects() {
 
           <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
             <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, idx) => (
-              <motion.div 
-                key={project.title}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full hover:-translate-y-2 hover:border-teal-400 dark:hover:border-teal-500/50 transition-all duration-300 group shadow-sm dark:shadow-none"
-              >
-                <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
-                  <img 
-                    src={project.image} 
-                    alt={project.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute top-4 right-4 p-2.5 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md shadow-sm border border-slate-200/50 dark:border-slate-700/50 text-teal-600 dark:text-teal-400 rounded-xl">
-                    <FolderGit2 className="w-5 h-5" />
-                  </div>
-                </div>
-                
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-display font-semibold text-slate-900 dark:text-slate-200 mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                    {project.title}
-                  </h3>
-                  
-                  <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
-                    {project.description}
-                  </p>
-                  
-                  <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/50 flex flex-col gap-4">
-                    <div className="flex flex-wrap gap-2">
-                      {project.tech.map(tech => (
-                        <span key={tech} className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800/50 text-xs font-mono text-slate-600 dark:text-slate-400">
-                          {tech}
-                        </span>
-                      ))}
+            {isLoading ? (
+              Array.from({ length: Math.min(filteredProjects.length || 3, 6) }).map((_, idx) => (
+                <motion.div 
+                  key={`skeleton-${idx}`}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full shadow-sm dark:shadow-none"
+                >
+                  <div className="h-48 w-full bg-slate-200 dark:bg-slate-800 animate-pulse"></div>
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="h-6 w-3/4 bg-slate-300 dark:bg-slate-700 animate-pulse rounded mb-4"></div>
+                    <div className="h-4 w-full bg-slate-200 dark:bg-slate-800 animate-pulse rounded mb-2"></div>
+                    <div className="h-4 w-5/6 bg-slate-200 dark:bg-slate-800 animate-pulse rounded mb-6"></div>
+                    <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/50 flex gap-2">
+                      <div className="h-6 w-16 bg-slate-200 dark:bg-slate-800 animate-pulse rounded"></div>
+                      <div className="h-6 w-16 bg-slate-200 dark:bg-slate-800 animate-pulse rounded"></div>
                     </div>
-                    <div className="flex items-center gap-4 text-sm font-medium">
-                      <a href={project.github} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
-                        <Github className="w-4 h-4" />
-                        GitHub
-                      </a>
-                      {project.demo && (
-                        <a href={project.demo} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
-                          <ExternalLink className="w-4 h-4" />
-                          Live Demo
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              filteredProjects.map((project, idx) => (
+                <motion.div 
+                  key={project.title}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full hover:-translate-y-2 hover:border-teal-400 dark:hover:border-teal-500/50 transition-all duration-300 group shadow-sm dark:shadow-none"
+                >
+                  <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
+                    <img 
+                      src={project.image} 
+                      alt={project.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute top-4 right-4 p-2.5 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md shadow-sm border border-slate-200/50 dark:border-slate-700/50 text-teal-600 dark:text-teal-400 rounded-xl">
+                      <FolderGit2 className="w-5 h-5" />
+                    </div>
+                  </div>
+                  
+                  <div className="p-6 flex flex-col flex-grow">
+                    <h3 className="text-xl font-display font-semibold text-slate-900 dark:text-slate-200 mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                      {project.title}
+                    </h3>
+                    
+                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
+                      {project.description}
+                    </p>
+                    
+                    <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800/50 flex flex-col gap-4">
+                      <div className="flex flex-wrap gap-2">
+                        {project.tech.map(tech => (
+                          <span key={tech} className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800/50 text-xs font-mono text-slate-600 dark:text-slate-400">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-4 text-sm font-medium">
+                        <a href={project.github} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+                          <Github className="w-4 h-4" />
+                          GitHub
                         </a>
-                      )}
+                        {project.demo && (
+                          <a href={project.demo} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+                            <ExternalLink className="w-4 h-4" />
+                            Live Demo
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))
+            )}
             </AnimatePresence>
           </motion.div>
           
@@ -259,17 +312,33 @@ export function Projects() {
                 </h3>
               </div>
               
-              <div className="flex flex-col gap-6 items-center justify-center flex-grow w-full">
-                <img 
-                  src="https://github-readme-stats.vercel.app/api?username=pratik04032&show_icons=true&theme=transparent&hide_border=true&title_color=0d9488&icon_color=0d9488&text_color=64748b" 
-                  alt="GitHub Stats" 
-                  className="w-full max-w-md dark:brightness-110 dark:invert-[.85] dark:hue-rotate-180" 
-                />
-                <img 
-                  src="https://github-readme-streak-stats.herokuapp.com/?user=pratik04032&theme=transparent&hide_border=true&title_color=0d9488&icon_color=0d9488&text_color=64748b" 
-                  alt="GitHub Streak" 
-                  className="w-full max-w-md dark:brightness-110 dark:invert-[.85] dark:hue-rotate-180" 
-                />
+              <div className="flex flex-col gap-6 items-center justify-center flex-grow w-full relative min-h-[180px]">
+                {!statsLoaded && (
+                  <div className="absolute inset-0 flex flex-col gap-6 items-center justify-center w-full max-w-md mx-auto">
+                    <div className="w-full h-[180px] bg-slate-200 dark:bg-slate-800 animate-pulse rounded-xl"></div>
+                  </div>
+                )}
+                {statsLoaded && githubStats && (
+                  <div className={`w-full max-w-md p-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 transition-opacity duration-500 ${statsLoaded ? 'opacity-100' : 'opacity-0'}`}>
+                    <div className="flex items-center gap-4 mb-6">
+                      <img src={githubStats.avatar_url} alt={githubStats.login} className="w-16 h-16 rounded-full border-2 border-teal-500/20" />
+                      <div>
+                        <h4 className="font-semibold text-lg text-slate-900 dark:text-white">{githubStats.name || githubStats.login}</h4>
+                        <a href={githubStats.html_url} target="_blank" rel="noreferrer" className="text-teal-600 dark:text-teal-400 text-sm hover:underline">@{githubStats.login}</a>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-white dark:bg-slate-800/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700/50 text-center">
+                        <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{githubStats.public_repos}</div>
+                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Repositories</div>
+                      </div>
+                      <div className="bg-white dark:bg-slate-800/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700/50 text-center">
+                        <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{githubStats.followers}</div>
+                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Followers</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
