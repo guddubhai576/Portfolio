@@ -1,5 +1,6 @@
 import { Github, Linkedin, Facebook, Instagram, Twitter, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import { db } from '../lib/firebase';
 import { doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
 
@@ -54,7 +55,14 @@ export function Footer() {
   return (
     <footer className="py-12 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-6 flex flex-col items-center gap-6">
-        <div className="flex items-center gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col items-center gap-6"
+        >
+          <div className="flex items-center gap-6">
           <a 
             href="https://github.com/pratik04032" 
             target="_blank" 
@@ -120,6 +128,7 @@ export function Footer() {
             <span><span className="font-semibold text-slate-900 dark:text-white">{visitorCount.toLocaleString()}</span> visitors</span>
           </div>
         )}
+        </motion.div>
       </div>
     </footer>
   );
