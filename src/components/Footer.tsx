@@ -32,16 +32,9 @@ export function Footer() {
         const statRef = doc(db, 'siteStats', 'global');
         
         const hasVisited = localStorage.getItem('has_visited');
-        const docSnap = await getDoc(statRef);
         
         if (!hasVisited) {
-          if (docSnap.exists()) {
-            await updateDoc(statRef, {
-              visits: increment(1)
-            });
-          } else {
-            await setDoc(statRef, { visits: 1 });
-          }
+          await setDoc(statRef, { visits: increment(1) }, { merge: true });
           localStorage.setItem('has_visited', 'true');
         }
         

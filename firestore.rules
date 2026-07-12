@@ -23,7 +23,7 @@ service cloud.firestore {
     function isValidSiteStat(data) {
       return data.keys().hasAll(['visits']) &&
         data.size() == 1 &&
-        data.visits is int && data.visits >= 0;
+        data.visits is number && data.visits >= 0;
     }
 
     match /siteStats/{statId} {
