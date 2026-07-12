@@ -178,69 +178,101 @@ export function Projects() {
             </AnimatePresence>
           </motion.div>
           
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm dark:shadow-none"
-          >
-            <div className="flex items-center gap-3 mb-8">
-              <div className="p-3 bg-teal-100 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-xl">
-                <BarChart3 className="w-6 h-6" />
+          <div className="grid lg:grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm dark:shadow-none flex flex-col"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="p-3 bg-teal-100 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-xl">
+                  <BarChart3 className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-display font-semibold text-slate-900 dark:text-white">
+                  Tech Stack Distribution
+                </h3>
               </div>
-              <h3 className="text-2xl font-display font-semibold text-slate-900 dark:text-white">
-                Tech Stack Distribution
-              </h3>
-            </div>
-            
-            <div className="h-[400px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={techData}
-                  margin={{
-                    top: 20,
-                    right: 30,
-                    left: 20,
-                    bottom: 60,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.1} vertical={false} />
-                  <XAxis 
-                    dataKey="name" 
-                    angle={-45} 
-                    textAnchor="end" 
-                    height={80} 
-                    tick={{ fill: '#64748b', fontSize: 12 }} 
-                    axisLine={{ stroke: '#cbd5e1', opacity: 0.2 }}
-                    tickLine={false}
-                  />
-                  <YAxis 
-                    tick={{ fill: '#64748b', fontSize: 12 }} 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tickCount={5}
-                  />
-                  <Tooltip 
-                    cursor={{ fill: '#f1f5f9', opacity: 0.1 }}
-                    contentStyle={{ 
-                      backgroundColor: '#1e293b', 
-                      border: 'none', 
-                      borderRadius: '8px',
-                      color: '#f8fafc',
-                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+              
+              <div className="h-[400px] w-full flex-grow">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={techData}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 60,
                     }}
-                    itemStyle={{ color: '#2dd4bf' }}
-                  />
-                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                    {techData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </motion.div>
+                  >
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} vertical={false} />
+                    <XAxis 
+                      dataKey="name" 
+                      angle={-45} 
+                      textAnchor="end" 
+                      height={80} 
+                      tick={{ fill: '#64748b', fontSize: 12 }} 
+                      axisLine={{ stroke: '#cbd5e1', opacity: 0.2 }}
+                      tickLine={false}
+                    />
+                    <YAxis 
+                      tick={{ fill: '#64748b', fontSize: 12 }} 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tickCount={5}
+                    />
+                    <Tooltip 
+                      cursor={{ fill: '#f1f5f9', opacity: 0.1 }}
+                      contentStyle={{ 
+                        backgroundColor: '#1e293b', 
+                        border: 'none', 
+                        borderRadius: '8px',
+                        color: '#f8fafc',
+                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                      }}
+                      itemStyle={{ color: '#2dd4bf' }}
+                    />
+                    <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                      {techData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm dark:shadow-none flex flex-col"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="p-3 bg-teal-100 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-xl">
+                  <Github className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-display font-semibold text-slate-900 dark:text-white">
+                  GitHub Insights
+                </h3>
+              </div>
+              
+              <div className="flex flex-col gap-6 items-center justify-center flex-grow w-full">
+                <img 
+                  src="https://github-readme-stats.vercel.app/api?username=pratik04032&show_icons=true&theme=transparent&hide_border=true&title_color=0d9488&icon_color=0d9488&text_color=64748b" 
+                  alt="GitHub Stats" 
+                  className="w-full max-w-md dark:brightness-110 dark:invert-[.85] dark:hue-rotate-180" 
+                />
+                <img 
+                  src="https://github-readme-streak-stats.herokuapp.com/?user=pratik04032&theme=transparent&hide_border=true&title_color=0d9488&icon_color=0d9488&text_color=64748b" 
+                  alt="GitHub Streak" 
+                  className="w-full max-w-md dark:brightness-110 dark:invert-[.85] dark:hue-rotate-180" 
+                />
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
