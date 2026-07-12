@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Mail, Phone, MapPin, Send, User } from 'lucide-react';
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { db } from '../lib/firebase';
@@ -9,6 +10,7 @@ import { handleFirestoreError, OperationType } from '../lib/firestoreError';
 import { IndiaMap } from './IndiaMap';
 
 export function Contact() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -93,7 +95,7 @@ export function Contact() {
             07. What's Next?
           </h2>
           <h3 className="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-6">
-            Get In Touch
+            {t('contact.title', 'Get In Touch')}
           </h3>
           <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
             I'm currently seeking internships, full-time Data Analyst / Frontend Developer roles, freelance opportunities, and open-source collaborations. My inbox is always open. Whether you have a question or just want to say hi, I'll try my best to get back to you!
@@ -109,13 +111,25 @@ export function Contact() {
             className="md:col-span-2 space-y-8"
           >
             <div className="flex items-start gap-4">
+              <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl">
+                <User className="w-6 h-6" />
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Name</h4>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Pratik Kumar Jena
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
               <div className="p-3 bg-teal-100 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-xl">
                 <Mail className="w-6 h-6" />
               </div>
               <div>
                 <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Email</h4>
-                <a href="mailto:pratikkumarjena04@gmail.com" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
-                  pratikkumarjena04@gmail.com
+                <a href="mailto:pratikkumarjena9@gmail.com" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+                  pratikkumarjena9@gmail.com
                 </a>
               </div>
             </div>

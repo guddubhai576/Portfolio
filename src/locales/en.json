@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "About": "About",
+    "Skills": "Skills",
+    "Experience": "Experience",
+    "Education": "Education",
+    "Certificates": "Certificates",
+    "Projects": "Projects",
+    "Contact": "Contact"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "role": "Full Stack Developer & AI Enthusiast",
+    "description": "I craft data-driven applications by specializing in data analysis, visualization, and machine learning.",
+    "viewProjects": "Download Resume",
+    "contactMe": "Contact Me"
+  },
+  "about": {
+    "title": "About Me",
+    "description": "Passionate about building scalable software solutions and exploring the possibilities of AI. Based in India.",
+    "location": "Based in India",
+    "experience": "Years Experience",
+    "projects": "Projects Completed",
+    "clients": "Happy Clients"
+  },
+  "skills": {
+    "title": "Tech Stack"
+  },
+  "experience": {
+    "title": "Experience"
+  },
+  "education": {
+    "title": "Education"
+  },
+  "certificates": {
+    "title": "Certificates"
+  },
+  "projects": {
+    "title": "Featured Projects",
+    "filter": "Filter:"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Let's discuss how we can work together.",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "name": "Name",
+    "preferredDate": "Preferred Date (Optional)",
+    "preferredTime": "Preferred Time (Optional)",
+    "message": "Message",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "success": "Message sent successfully!",
+    "error": "Failed to send message. Please try again."
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "visitors": "visitors"
+  }
+}

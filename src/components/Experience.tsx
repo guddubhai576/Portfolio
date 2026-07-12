@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { useState } from 'react';
 import { Briefcase, Calendar } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const experiences = [
   {
@@ -19,6 +20,7 @@ const experiences = [
 
 export function Experience() {
   const [activeIdx, setActiveIdx] = useState(0);
+  const { t } = useTranslation();
 
   return (
     <section id="experience" className="py-24 px-6 relative">
@@ -30,7 +32,7 @@ export function Experience() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white mb-12 flex items-center gap-4">
-            <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">03.</span> Experience
+            <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">03.</span> {t('experience.title', 'Experience')}
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-4"></div>
           </h2>
 

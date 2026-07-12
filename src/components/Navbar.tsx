@@ -1,21 +1,23 @@
 import { motion } from 'motion/react';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon, Languages } from 'lucide-react';
 import { useState, useEffect } from 'react';
-
-const navLinks = [
-  { name: 'About', href: '#about' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Experience', href: '#experience' },
-  { name: 'Education', href: '#education' },
-  { name: 'Certificates', href: '#certificates' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Contact', href: '#contact' },
-];
+import { useTranslation } from 'react-i18next';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const { t, i18n } = useTranslation();
+
+  const navLinks = [
+    { name: t('nav.About', 'About'), href: '#about' },
+    { name: t('nav.Skills', 'Skills'), href: '#skills' },
+    { name: t('nav.Experience', 'Experience'), href: '#experience' },
+    { name: t('nav.Education', 'Education'), href: '#education' },
+    { name: t('nav.Certificates', 'Certificates'), href: '#certificates' },
+    { name: t('nav.Projects', 'Projects'), href: '#projects' },
+    { name: t('nav.Contact', 'Contact'), href: '#contact' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -44,6 +46,11 @@ export function Navbar() {
     }
   };
 
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'hi' : 'en';
+    i18n.changeLanguage(newLang);
+  };
+
   return (
     <header 
       className={`fixed top-0 w-full z-50 transition-all duration-300 px-6 ${
@@ -69,11 +76,20 @@ export function Navbar() {
             ))}
           </nav>
           
-          <button
-            onClick={toggleTheme}
-            className="relative p-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center overflow-hidden"
-            aria-label="Toggle theme"
-          >
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleLanguage}
+              className="p-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+              aria-label="Toggle language"
+            >
+              <Languages className="w-5 h-5" />
+              <span className="text-xs font-bold uppercase">{i18n.language}</span>
+            </button>
+            <button
+              onClick={toggleTheme}
+              className="relative p-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center overflow-hidden"
+              aria-label="Toggle theme"
+            >
             <motion.div
               initial={false}
               animate={{ rotate: isDark ? 90 : 0, scale: isDark ? 0 : 1, opacity: isDark ? 0 : 1 }}
@@ -92,10 +108,19 @@ export function Navbar() {
             </motion.div>
             <div className="w-5 h-5 opacity-0" />
           </button>
+          </div>
         </div>
 
         {/* Mobile Controls */}
-        <div className="md:hidden flex items-center gap-4">
+        <div className="md:hidden flex items-center gap-2">
+          <button
+            onClick={toggleLanguage}
+            className="p-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+            aria-label="Toggle language"
+          >
+            <Languages className="w-5 h-5" />
+            <span className="text-xs font-bold uppercase">{i18n.language}</span>
+          </button>
           <button
             onClick={toggleTheme}
             className="relative p-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center overflow-hidden"

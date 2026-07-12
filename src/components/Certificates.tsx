@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { Award } from 'lucide-react';
 
 const certificates = [
@@ -10,6 +11,7 @@ const certificates = [
 ];
 
 export function Certificates() {
+  const { t } = useTranslation();
   return (
     <section id="certificates" className="py-24 px-6 relative transition-colors duration-300">
       <div className="max-w-4xl mx-auto">
@@ -20,7 +22,7 @@ export function Certificates() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white mb-12 flex items-center gap-4">
-            <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">05.</span> Certificates
+            <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">05.</span> {t('certificates.title', 'Certificates')}
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-4"></div>
           </h2>
 

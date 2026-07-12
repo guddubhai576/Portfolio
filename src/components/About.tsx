@@ -1,7 +1,10 @@
 import { motion } from 'motion/react';
 import { BookOpen, Code, TerminalSquare } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export function About() {
+  const { t } = useTranslation();
+
   return (
     <section id="about" className="py-24 px-6 relative">
       <div className="max-w-4xl mx-auto">
@@ -12,7 +15,7 @@ export function About() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white mb-12 flex items-center gap-4">
-            <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">01.</span> About Me
+            <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">01.</span> {t('about.title', 'About Me')}
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-4"></div>
           </h2>
 

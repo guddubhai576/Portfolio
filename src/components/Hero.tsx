@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Github, Linkedin, Mail, ChevronDown, Download } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const titles = [
   "Data Analyst",
@@ -47,6 +48,8 @@ function TypeWriter() {
 }
 
 export function Hero() {
+  const { t } = useTranslation();
+
   return (
     <section id="home" className="min-h-screen flex items-center justify-center pt-20 relative px-6 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-500/10 via-slate-50 to-slate-50 dark:from-teal-900/20 dark:via-slate-950 dark:to-slate-950 -z-10 transition-colors duration-300" />
@@ -65,7 +68,7 @@ export function Hero() {
               transition={{ delay: 0.2 }}
               className="text-teal-600 dark:text-teal-400 font-mono tracking-wide"
             >
-              Hi, I'm
+              {t('hero.greeting', "Hi, I'm")}
             </motion.p>
             <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
               Pratik Kumar <br/>
@@ -79,7 +82,7 @@ export function Hero() {
           </div>
 
           <p className="text-slate-700 dark:text-slate-300 max-w-lg leading-relaxed">
-            I craft data-driven applications by specializing in data analysis, visualization, and machine learning.
+            {t('hero.description', "I craft data-driven applications by specializing in data analysis, visualization, and machine learning.")}
           </p>
 
           <div className="flex flex-wrap items-center gap-6 pt-4">
@@ -89,7 +92,7 @@ export function Hero() {
               className="inline-flex items-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 dark:bg-teal-500 dark:hover:bg-teal-400 text-white dark:text-slate-950 font-medium rounded-lg transition-colors shadow-lg shadow-teal-500/20"
             >
               <Download className="w-5 h-5" />
-              Download Resume
+              {t('hero.viewProjects', "Download Resume")}
             </a>
             
             <div className="flex gap-4">
