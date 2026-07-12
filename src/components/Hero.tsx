@@ -88,8 +88,6 @@ export function Hero() {
           <div className="flex flex-wrap items-center gap-6 pt-4">
             <a 
               href="/resume.pdf" 
-              target="_blank"
-              rel="noopener noreferrer"
               download="Pratik_Kumar_Jena_Resume.pdf"
               className="inline-flex items-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 dark:bg-teal-500 dark:hover:bg-teal-400 text-white dark:text-slate-950 font-medium rounded-lg transition-colors shadow-lg shadow-teal-500/20"
             >
