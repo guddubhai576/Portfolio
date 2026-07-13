@@ -175,8 +175,9 @@ export function Projects() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
                   transition={{ duration: 0.3 }}
-                  className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full hover:-translate-y-2 hover:border-teal-400 dark:hover:border-teal-500/50 transition-all duration-300 group shadow-sm dark:shadow-none"
+                  className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full hover:border-teal-400 dark:hover:border-teal-500/50 transition-colors duration-300 group shadow-sm dark:shadow-none"
                 >
                   <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
                     <img 
