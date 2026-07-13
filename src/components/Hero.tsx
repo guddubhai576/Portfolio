@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Github, Linkedin, Mail, ChevronDown, Download, Printer } from 'lucide-react';
+import { Github, Linkedin, Mail, ChevronDown, Download } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -94,13 +94,6 @@ export function Hero() {
               <Download className="w-5 h-5" />
               {t('hero.viewProjects', "Download Resume")}
             </a>
-            <button
-              onClick={() => window.print()}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-900 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-medium rounded-lg transition-colors shadow-lg shadow-slate-900/20 print-hidden"
-            >
-              <Printer className="w-5 h-5" />
-              Print Resume
-            </button>
             
             <div className="flex gap-4 print-hidden">
               <a href="https://github.com/pratik04032" target="_blank" rel="noreferrer" 

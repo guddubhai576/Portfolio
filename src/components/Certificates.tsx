@@ -4,8 +4,33 @@ import { Award } from 'lucide-react';
 
 const certificates = [
   {
-    title: "Certified Data Science Professional",
-    issuer: "Certification Provider",
+    title: "Master Data Science Program",
+    issuer: "GUVI",
+    date: "April 2026",
+  },
+  {
+    title: "Micro Python for Beginners",
+    issuer: "NIELIT, CALICUT",
+    date: "Completed",
+  },
+  {
+    title: "Artificial Intelligence: Types of Artificial Intelligence",
+    issuer: "Infosys Springboard",
+    date: "Completed",
+  },
+  {
+    title: "Prompt Engineering for Everyone",
+    issuer: "Cognitive Classes",
+    date: "Completed",
+  },
+  {
+    title: "Java (Basic)",
+    issuer: "HackerRank",
+    date: "Completed",
+  },
+  {
+    title: "JavaScript (Basic)",
+    issuer: "HackerRank",
     date: "Completed",
   }
 ];
