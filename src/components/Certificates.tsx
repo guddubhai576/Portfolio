@@ -1,3 +1,4 @@
+import { ScrollReveal } from './ScrollReveal';
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { Award } from 'lucide-react';
@@ -19,8 +20,58 @@ const certificates = [
     date: "Completed",
   },
   {
+    title: "Artificial Intelligence Beginner's Guide",
+    issuer: "Infosys Springboard",
+    date: "Completed",
+  },
+  {
     title: "Prompt Engineering for Everyone",
     issuer: "Cognitive Classes",
+    date: "Completed",
+  },
+  {
+    title: "IBM SkillsNetwork AI0117EN",
+    issuer: "Cognitive Class",
+    date: "Completed",
+  },
+  {
+    title: "Data Science Methodologies",
+    issuer: "Cognitive Class",
+    date: "Completed",
+  },
+  {
+    title: "Full Stack Development Internship",
+    issuer: "Edureka",
+    date: "Completed",
+  },
+  {
+    title: "Front-End Development Internship",
+    issuer: "Cognifyz Technologies",
+    date: "Completed",
+  },
+  {
+    title: "Introduction to Cloud Computing",
+    issuer: "TCS iON",
+    date: "Completed",
+  },
+  {
+    title: "Introduction to Soft Skills",
+    issuer: "TCS iON",
+    date: "Completed",
+  },
+  {
+    title: "Master Data Management",
+    issuer: "TCS iON",
+    date: "Completed",
+  },
+  {
+    title: "MongoDB Basics",
+    issuer: "MongoDB University",
+    date: "Completed",
+  },
+  {
+    title: "Golang (Intermediate)",
+    issuer: "HackerRank",
     date: "Completed",
   },
   {
@@ -32,6 +83,56 @@ const certificates = [
     title: "JavaScript (Basic)",
     issuer: "HackerRank",
     date: "Completed",
+  },
+  {
+    title: "CSS (Basic)",
+    issuer: "HackerRank",
+    date: "Completed",
+  },
+  {
+    title: "Introduction to AI & ML",
+    issuer: "Great Learning",
+    date: "Completed",
+  },
+  {
+    title: "Introduction to SQL",
+    issuer: "Great Learning",
+    date: "Completed",
+  },
+  {
+    title: "Introduction to HTML",
+    issuer: "Great Learning",
+    date: "Completed",
+  },
+  {
+    title: "Java Programming for Beginners",
+    issuer: "Great Learning",
+    date: "Completed",
+  },
+  {
+    title: "Mobile App Development",
+    issuer: "Great Learning",
+    date: "Completed",
+  },
+  {
+    title: "Maruti Suzuki Certification",
+    issuer: "Maruti Suzuki",
+    date: "Completed",
+  },
+  {
+    title: "HP Life Certification",
+    issuer: "HP Life",
+    date: "Completed",
+  },
+  {
+    title: "Machine Learning with Python",
+    issuer: "Cognitive Class",
+    date: "Completed",
+  },
+  {
+    title: "Large Language Models",
+    issuer: "Cognitive Class",
+    date: "Completed",
   }
 ];
 
@@ -40,12 +141,7 @@ export function Certificates() {
   return (
     <section id="certificates" className="py-24 px-6 relative transition-colors duration-300">
       <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        <ScrollReveal>
           <h2 className="text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white mb-12 flex items-center gap-4">
             <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">05.</span> {t('certificates.title', 'Certificates')}
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-4"></div>
@@ -77,7 +173,7 @@ export function Certificates() {
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

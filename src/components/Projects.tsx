@@ -1,3 +1,4 @@
+import { ScrollReveal } from './ScrollReveal';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { FolderGit2, ExternalLink, Github, BarChart3, Filter } from 'lucide-react';
@@ -111,12 +112,7 @@ export function Projects() {
   return (
     <section id="projects" className="py-24 px-6 relative bg-slate-100/50 dark:bg-slate-900/20 transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        <ScrollReveal>
           <h2 className="text-3xl md:text-4xl font-display font-bold text-slate-900 dark:text-white mb-12 flex items-center gap-4">
             <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">06.</span> {t('projects.title', 'Featured Projects')}
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-4"></div>
@@ -342,7 +338,7 @@ export function Projects() {
               </div>
             </motion.div>
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -1,3 +1,4 @@
+import { ScrollReveal } from './ScrollReveal';
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { Mail, Phone, MapPin, Send, User } from 'lucide-react';
@@ -84,13 +85,7 @@ export function Contact() {
   return (
     <section id="contact" className="py-24 px-6 relative transition-colors duration-300">
       <div className="max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
+        <ScrollReveal className="text-center mb-16">
           <h2 className="text-teal-600 dark:text-teal-400 font-mono text-sm tracking-widest uppercase mb-4">
             07. What's Next?
           </h2>
@@ -100,16 +95,10 @@ export function Contact() {
           <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
             I'm currently seeking internships, full-time Data Analyst / Frontend Developer roles, freelance opportunities, and open-source collaborations. My inbox is always open. Whether you have a question or just want to say hi, I'll try my best to get back to you!
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         <div className="grid md:grid-cols-5 gap-12 items-start">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="md:col-span-2 space-y-8"
-          >
+          <ScrollReveal direction="left" delay={0.2} className="md:col-span-2 space-y-8">
             <div className="flex items-start gap-4">
               <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl">
                 <User className="w-6 h-6" />
@@ -161,15 +150,9 @@ export function Contact() {
             <div className="mt-8">
               <IndiaMap />
             </div>
-          </motion.div>
+          </ScrollReveal>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="md:col-span-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm dark:shadow-none"
-          >
+          <ScrollReveal direction="right" delay={0.4} className="md:col-span-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm dark:shadow-none">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
@@ -259,7 +242,7 @@ export function Contact() {
                 </button>
               </div>
             </form>
-          </motion.div>
+          </ScrollReveal>
         </div>
 
       </div>
