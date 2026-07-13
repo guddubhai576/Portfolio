@@ -13,7 +13,8 @@ const projects = [
     category: "Frontend",
     image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032/Project-1C-Front-End-Developer-Portfolio-Analytics-Dashboard",
-    demo: "https://project-1-c-front-end-developer-por.vercel.app"
+    demo: "https://project-1-c-front-end-developer-por.vercel.app",
+    status: "Completed"
   },
   {
     title: "Real-Time Stock Screener",
@@ -22,7 +23,8 @@ const projects = [
     category: "Frontend",
     image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032/Project-1A-Front-End-Developer-Real-Time-Stock-Screener",
-    demo: "https://project-1-a-front-end-developer-rea-alpha.vercel.app"
+    demo: "https://project-1-a-front-end-developer-rea-alpha.vercel.app",
+    status: "Completed"
   },
   {
     title: "Positive Quote Generator",
@@ -31,7 +33,8 @@ const projects = [
     category: "Frontend",
     image: "https://images.unsplash.com/photo-1499744937866-d7e566a20a61?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032/positive-quote",
-    demo: "https://positive-quote.vercel.app"
+    demo: "https://positive-quote.vercel.app",
+    status: "Completed"
   },
   {
     title: "Multi-Step Loan Form",
@@ -40,7 +43,8 @@ const projects = [
     category: "Frontend",
     image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032/Project-1B-Front-End-Developer-Multi-Step-Loan-Application-Form",
-    demo: null
+    demo: null,
+    status: "Completed"
   },
   {
     title: "Deepfake Analysis using CNN",
@@ -49,7 +53,8 @@ const projects = [
     category: "Data Analysis",
     image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032/mobilenetv2-project",
-    demo: null
+    demo: null,
+    status: "Completed"
   },
   {
     title: "AI Resume Analyzer",
@@ -58,7 +63,8 @@ const projects = [
     category: "Data Analysis",
     image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=800&auto=format&fit=crop",
     github: "https://github.com/pratik04032",
-    demo: null
+    demo: null,
+    status: "In Progress"
   }
 ];
 
@@ -180,12 +186,20 @@ export function Projects() {
                   className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full hover:border-teal-400 dark:hover:border-teal-500/50 transition-colors duration-300 group shadow-sm dark:shadow-none"
                 >
                   <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
-                    <img 
+                                        <img 
                       src={project.image} 
                       alt={project.title} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />
+                    {project.status && (
+                      <div className="absolute top-4 left-4 px-3 py-1.5 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md shadow-sm border border-slate-200/50 dark:border-slate-700/50 text-xs font-semibold rounded-full flex items-center gap-1.5">
+                        {project.status === 'Completed' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>}
+                        {project.status === 'In Progress' && <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>}
+                        {project.status === 'Open Source' && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>}
+                        <span className="text-slate-700 dark:text-slate-300">{project.status}</span>
+                      </div>
+                    )}
                     <div className="absolute top-4 right-4 p-2.5 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md shadow-sm border border-slate-200/50 dark:border-slate-700/50 text-teal-600 dark:text-teal-400 rounded-xl">
                       <FolderGit2 className="w-5 h-5" />
                     </div>
