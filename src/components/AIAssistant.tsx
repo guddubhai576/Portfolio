@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, X, Send, Bot, User, Loader2 } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User, Loader2, Mic, MicOff } from 'lucide-react';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -61,6 +61,135 @@ export function AIAssistant() {
     }
   };
 
+
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
+  const wsRef = useRef<WebSocket | null>(null);
+  const inputAudioCtxRef = useRef<AudioContext | null>(null);
+  const outputAudioCtxRef = useRef<AudioContext | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const processorRef = useRef<ScriptProcessorNode | null>(null);
+  const nextStartTimeRef = useRef(0);
+
+  const pcmToBase64 = (pcmData: Float32Array) => {
+    const buffer = new ArrayBuffer(pcmData.length * 2);
+    const view = new DataView(buffer);
+    for (let i = 0; i < pcmData.length; i++) {
+      const s = Math.max(-1, Math.min(1, pcmData[i]));
+      view.setInt16(i * 2, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+    }
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  };
+
+  const playAudioChunk = (audioCtx: AudioContext, base64Audio: string) => {
+    const binary = atob(base64Audio);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    const buffer = new Int16Array(bytes.buffer);
+    const audioBuffer = audioCtx.createBuffer(1, buffer.length, 24000);
+    const channelData = audioBuffer.getChannelData(0);
+    for (let i = 0; i < buffer.length; i++) {
+      channelData[i] = buffer[i] / 0x8000;
+    }
+    
+    const source = audioCtx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioCtx.destination);
+    
+    if (nextStartTimeRef.current < audioCtx.currentTime) {
+      nextStartTimeRef.current = audioCtx.currentTime;
+    }
+    source.start(nextStartTimeRef.current);
+    nextStartTimeRef.current += audioBuffer.duration;
+  };
+
+  const stopVoiceMode = () => {
+    setIsVoiceMode(false);
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+    if (processorRef.current) {
+      processorRef.current.disconnect();
+      processorRef.current = null;
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
+    }
+    if (inputAudioCtxRef.current) {
+      inputAudioCtxRef.current.close();
+      inputAudioCtxRef.current = null;
+    }
+    if (outputAudioCtxRef.current) {
+      outputAudioCtxRef.current.close();
+      outputAudioCtxRef.current = null;
+    }
+  };
+
+  const startVoiceMode = async () => {
+    try {
+      setIsVoiceMode(true);
+      const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const ws = new WebSocket(`${wsProtocol}//${location.host}/live`);
+      wsRef.current = ws;
+
+      const inputAudioCtx = new AudioContext({ sampleRate: 16000 });
+      inputAudioCtxRef.current = inputAudioCtx;
+      
+      const outputAudioCtx = new AudioContext({ sampleRate: 24000 });
+      outputAudioCtxRef.current = outputAudioCtx;
+      nextStartTimeRef.current = 0;
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      
+      const source = inputAudioCtx.createMediaStreamSource(stream);
+      const processor = inputAudioCtx.createScriptProcessor(4096, 1, 1);
+      processorRef.current = processor;
+      
+      source.connect(processor);
+      processor.connect(inputAudioCtx.destination);
+
+      processor.onaudioprocess = (e) => {
+        if (ws.readyState === WebSocket.OPEN) {
+          const base64 = pcmToBase64(e.inputBuffer.getChannelData(0));
+          ws.send(JSON.stringify({ audio: base64 }));
+        }
+      };
+
+      ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        if (msg.audio) {
+          playAudioChunk(outputAudioCtx, msg.audio);
+        }
+        if (msg.interrupted) {
+          nextStartTimeRef.current = 0;
+        }
+      };
+      
+      ws.onclose = () => {
+        stopVoiceMode();
+      };
+    } catch(err) {
+      console.error(err);
+      stopVoiceMode();
+      alert("Microphone permission denied or Voice API failed.");
+    }
+  };
+
+  useEffect(() => {
+    if (!isOpen && isVoiceMode) {
+      stopVoiceMode();
+    }
+  }, [isOpen, isVoiceMode]);
+
   return (
     <>
       {/* Floating Action Button */}
@@ -97,18 +226,37 @@ export function AIAssistant() {
                   <p className="text-xs text-slate-500 dark:text-slate-400">Powered by Gemini</p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-2 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                aria-label="Close Chat"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={isVoiceMode ? stopVoiceMode : startVoiceMode}
+                  className={`p-2 rounded-lg transition-colors ${isVoiceMode ? 'bg-red-100 text-red-500 hover:bg-red-200 dark:bg-red-500/20 dark:hover:bg-red-500/30' : 'text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800'}`}
+                  aria-label={isVoiceMode ? "Stop Voice Mode" : "Start Voice Mode"}
+                  title={isVoiceMode ? "Stop Voice Mode" : "Start Voice Mode"}
+                >
+                  {isVoiceMode ? <Mic className="w-5 h-5 animate-pulse" /> : <MicOff className="w-5 h-5" />}
+                </button>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-2 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                  aria-label="Close Chat"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.map((msg, idx) => (
+<div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {isVoiceMode && (
+                <div className="flex flex-col items-center justify-center h-full space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-500/20 flex items-center justify-center relative">
+                    <div className="absolute inset-0 bg-teal-400/20 rounded-full animate-ping"></div>
+                    <Mic className="w-8 h-8 text-teal-600 dark:text-teal-400" />
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm font-medium">Listening... Speak now.</p>
+                </div>
+              )}
+              {!isVoiceMode && messages.map((msg, idx) => (
                 <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                   <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center ${msg.role === 'user' ? 'bg-slate-100 dark:bg-slate-800' : 'bg-teal-100 dark:bg-teal-500/20'}`}>
                     {msg.role === 'user' ? (
@@ -126,7 +274,7 @@ export function AIAssistant() {
                   </div>
                 </div>
               ))}
-              {isLoading && (
+              {!isVoiceMode && isLoading && (
                 <div className="flex gap-3">
                   <div className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center bg-teal-100 dark:bg-teal-500/20">
                     <Bot className="w-4 h-4 text-teal-600 dark:text-teal-400" />
@@ -141,19 +289,19 @@ export function AIAssistant() {
             </div>
 
             {/* Input */}
-            <form onSubmit={handleSubmit} className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                        <form onSubmit={handleSubmit} className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
               <div className="relative flex items-center">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about my skills or experience..."
+                  placeholder={isVoiceMode ? "Voice mode active..." : "Ask about my skills or experience..."}
                   className="w-full pl-4 pr-12 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors text-slate-900 dark:text-white text-sm"
-                  disabled={isLoading}
+                  disabled={isLoading || isVoiceMode}
                 />
                 <button
                   type="submit"
-                  disabled={!input.trim() || isLoading}
+                  disabled={!input.trim() || isLoading || isVoiceMode}
                   className="absolute right-2 p-2 text-teal-500 hover:text-teal-600 disabled:opacity-50 disabled:hover:text-teal-500 transition-colors"
                 >
                   <Send className="w-4 h-4" />

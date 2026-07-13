@@ -157,8 +157,60 @@ Here is some context about Pratik:
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://0.0.0.0:${PORT}`);
+  });
+
+  const { WebSocketServer } = await import("ws");
+  const wss = new WebSocketServer({ server, path: "/live" });
+
+  wss.on("connection", async (clientWs) => {
+    try {
+      const { GoogleGenAI } = await import("@google/genai");
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      
+      const session = await ai.live.connect({
+        model: "gemini-3.1-flash-live-preview",
+        callbacks: {
+          onmessage: (message) => {
+            const audio = message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
+            if (audio) {
+              clientWs.send(JSON.stringify({ audio }));
+            }
+            if (message.serverContent?.interrupted) {
+              clientWs.send(JSON.stringify({ interrupted: true }));
+            }
+          },
+        },
+        config: {
+          responseModalities: ["AUDIO" as any],
+          speechConfig: {
+            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Zephyr" } },
+          },
+          systemInstruction: {
+             parts: [{ text: "You are an AI assistant for Pratik Kumar Jena's portfolio. You help visitors. Pratik is a Data Analyst and Frontend Developer." }]
+          },
+        },
+      });
+
+      clientWs.on("message", (data) => {
+        try {
+          const parsed = JSON.parse(data.toString());
+          if (parsed.audio) {
+            session.sendRealtimeInput({
+              audio: { data: parsed.audio, mimeType: "audio/pcm;rate=16000" }
+            });
+          }
+        } catch(e) {}
+      });
+      
+      clientWs.on("close", () => {
+        // cleanup if needed
+      });
+    } catch(err) {
+      console.error(err);
+      clientWs.close();
+    }
   });
 }
 
