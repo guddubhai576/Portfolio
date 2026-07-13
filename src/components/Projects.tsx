@@ -122,7 +122,7 @@ export function Projects() {
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-4"></div>
           </h2>
 
-          <div className="flex flex-wrap items-center gap-3 mb-10">
+          <div className="flex flex-wrap items-center gap-3 mb-10 print-hidden">
             <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mr-2">
               <Filter className="w-4 h-4" />
               <span className="text-sm font-medium">Filter:</span>
@@ -231,7 +231,7 @@ export function Projects() {
             </AnimatePresence>
           </motion.div>
           
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid lg:grid-cols-2 gap-6 print-hidden">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

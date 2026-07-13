@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Github, Linkedin, Mail, ChevronDown, Download } from 'lucide-react';
+import { Github, Linkedin, Mail, ChevronDown, Download, Printer } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -89,13 +89,20 @@ export function Hero() {
             <a 
               href="/resume.pdf" 
               download="Pratik_Kumar_Jena_Resume.pdf"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 dark:bg-teal-500 dark:hover:bg-teal-400 text-white dark:text-slate-950 font-medium rounded-lg transition-colors shadow-lg shadow-teal-500/20"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 dark:bg-teal-500 dark:hover:bg-teal-400 text-white dark:text-slate-950 font-medium rounded-lg transition-colors shadow-lg shadow-teal-500/20 print-hidden"
             >
               <Download className="w-5 h-5" />
               {t('hero.viewProjects', "Download Resume")}
             </a>
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-900 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-medium rounded-lg transition-colors shadow-lg shadow-slate-900/20 print-hidden"
+            >
+              <Printer className="w-5 h-5" />
+              Print Resume
+            </button>
             
-            <div className="flex gap-4">
+            <div className="flex gap-4 print-hidden">
               <a href="https://github.com/pratik04032" target="_blank" rel="noreferrer" 
                  className="p-3 bg-white dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-white transition-colors ring-1 ring-slate-200 dark:ring-white/10 hover:ring-slate-300 dark:hover:ring-white/30 shadow-sm">
                 <Github className="w-6 h-6" />
@@ -110,13 +117,25 @@ export function Hero() {
               </a>
             </div>
           </div>
+          
+          <div className="hidden print:flex flex-col gap-2 mt-4 text-sm text-slate-800">
+            <div className="flex items-center gap-2">
+              <Mail className="w-4 h-4" /> pratikkumarjena04@gmail.com
+            </div>
+            <div className="flex items-center gap-2">
+              <Github className="w-4 h-4" /> github.com/pratik04032
+            </div>
+            <div className="flex items-center gap-2">
+              <Linkedin className="w-4 h-4" /> linkedin.com/in/pratik-kumar-jena-1823b3242
+            </div>
+          </div>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.3 }}
-          className="relative hidden md:block"
+          className="relative hidden md:block print-hidden"
         >
           <div className="aspect-square rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center p-8 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-tr from-teal-500/5 to-blue-500/5 dark:from-teal-500/10 dark:to-blue-500/10" />

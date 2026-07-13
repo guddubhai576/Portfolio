@@ -8,6 +8,42 @@
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
 }
 
-html {
+html, body {
   scroll-behavior: smooth;
+  @apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors duration-500 ease-in-out;
+}
+
+@media print {
+  /* Hide non-resume elements */
+  nav, footer, form, iframe, button[aria-label="Open AI Assistant"], button[aria-label="Back to Top"], .print-hidden {
+    display: none !important;
+  }
+
+  /* Reset some paddings/margins for sections to save paper */
+  section {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    min-height: auto !important;
+    break-inside: avoid;
+  }
+
+  #home {
+    padding-top: 0 !important;
+  }
+
+  /* Keep colors exact */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Specifically hide Contact section since resume usually has contact info at top */
+  #contact {
+    display: none !important;
+  }
+  
+  /* Hide the bounce arrow */
+  .animate-bounce {
+    display: none !important;
+  }
 }
