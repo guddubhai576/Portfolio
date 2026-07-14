@@ -198,7 +198,7 @@ const server = app.listen(PORT, "0.0.0.0", () => {
                         name,
                         response: { status: "navigated successfully to " + section }
                       }
-                    }]);
+                    }] as any);
                   }
                   if (name === 'download_resume') {
                     clientWs.send(JSON.stringify({ command: "download_resume" }));
@@ -208,7 +208,7 @@ const server = app.listen(PORT, "0.0.0.0", () => {
                         name,
                         response: { status: "Initiated resume download" }
                       }
-                    }]);
+                    }] as any);
                   }
                   if (name === 'toggle_theme') {
                     clientWs.send(JSON.stringify({ command: "toggle_theme" }));
@@ -218,7 +218,7 @@ const server = app.listen(PORT, "0.0.0.0", () => {
                         name,
                         response: { status: "Toggled theme" }
                       }
-                    }]);
+                    }] as any);
                   }
                 }
               }
@@ -242,10 +242,10 @@ const server = app.listen(PORT, "0.0.0.0", () => {
                 name: "navigate_to_section",
                 description: "Navigate the user to a specific section of the portfolio.",
                 parameters: {
-                  type: "OBJECT",
+                  type: "OBJECT" as any,
                   properties: {
                     section: {
-                      type: "STRING",
+                      type: "STRING" as any,
                       description: "The section ID to navigate to (e.g., 'home', 'about', 'skills', 'experience', 'education', 'projects', 'contact')."
                     }
                   },

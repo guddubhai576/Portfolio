@@ -1,6 +1,8 @@
 import { ScrollReveal } from './ScrollReveal';
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
+import { RadarChart } from './RadarChart';
+
 
 const skillCategories = [
   {
@@ -59,24 +61,8 @@ export function Skills() {
                 className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-sm dark:shadow-none"
               >
                 <h3 className="text-lg font-display font-semibold text-slate-900 dark:text-white mb-6 text-center">{category.title}</h3>
-                <div className="flex flex-col gap-4">
-                  {category.skills.map((skill, skillIdx) => (
-                    <div key={skill.name} className="space-y-2">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="font-medium text-slate-700 dark:text-slate-300">{skill.name}</span>
-                        <span className="text-slate-500 dark:text-slate-500 text-xs">{skill.level}%</span>
-                      </div>
-                      <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${skill.level}%` }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1, delay: 0.2 + (skillIdx * 0.1) }}
-                          className="h-full bg-teal-500 rounded-full"
-                        />
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex items-center justify-center">
+                  <RadarChart data={category.skills} size={250} />
                 </div>
               </motion.div>
             ))}
