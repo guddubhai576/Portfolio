@@ -64,6 +64,13 @@ const experiences = [
 export function Experience() {
   const [activeIdx, setActiveIdx] = useState(0);
   const { t } = useTranslation();
+  const localizedExperiences = localizedExperiences.map((exp, i) => ({
+    ...exp,
+    role: t(`experience.items.${i}.role`, exp.role),
+    company: t(`experience.items.${i}.company`, exp.company),
+    duration: t(`experience.items.${i}.duration`, exp.duration),
+    description: exp.description.map((desc, j) => t(`experience.items.${i}.description.${j}`, desc))
+  }));
 
   return (
     <section id="experience" className="py-24 px-6 relative">
@@ -80,7 +87,7 @@ export function Experience() {
               <div className="absolute left-4 md:left-[0.95rem] top-4 bottom-4 w-px bg-slate-200 dark:bg-slate-800" />
               
               <div className="space-y-8">
-                {experiences.map((exp, idx) => (
+                {localizedExperiences.map((exp, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveIdx(idx)}
@@ -123,10 +130,10 @@ export function Experience() {
                   className="bg-white dark:bg-slate-900/50 rounded-2xl p-6 md:p-8 border border-slate-200 dark:border-slate-800 shadow-sm"
                 >
                   <h3 className="text-2xl font-display font-semibold text-slate-900 dark:text-white mb-2">
-                    {experiences[activeIdx].role}
+                    {localizedExperiences[activeIdx].role}
                   </h3>
                   <div className="text-lg text-teal-600 dark:text-teal-400 mb-6 font-medium">
-                    @ {experiences[activeIdx].company}
+                    @ {localizedExperiences[activeIdx].company}
                   </div>
                   
                   <div className="flex gap-4">
@@ -134,7 +141,7 @@ export function Experience() {
                       <Briefcase className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                     </div>
                     <ul className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg list-disc pl-5 space-y-2">
-                      {experiences[activeIdx].description.map((item, idx) => (
+                      {localizedExperiences[activeIdx].description.map((item, idx) => (
                         <li key={idx}>{item}</li>
                       ))}
                     </ul>

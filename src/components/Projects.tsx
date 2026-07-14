@@ -68,10 +68,16 @@ const projects = [
   }
 ];
 
-const categories = ["All", ...new Set(projects.map(p => p.category))];
+const categories = ["All", ...new Set(localizedProjects.map(p => p.category))];
 
 export function Projects() {
   const { t } = useTranslation();
+  const localizedProjects = localizedProjects.map((p, i) => ({
+    ...p,
+    title: t(`projects.items.${i}.title`, p.title),
+    description: t(`projects.items.${i}.description`, p.description),
+    category: t(`projects.items.${i}.category`, p.category)
+  }));
   const [activeCategory, setActiveCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
   const [statsLoaded, setStatsLoaded] = useState(false);
@@ -98,12 +104,12 @@ export function Projects() {
       });
   }, []);
 
-  const filteredProjects = projects.filter(
+  const filteredProjects = localizedProjects.filter(
     (p) => activeCategory === "All" || p.category === activeCategory
   );
   const techData = useMemo(() => {
     const techDistribution: Record<string, number> = {};
-    projects.forEach(project => {
+    localizedProjects.forEach(project => {
       project.tech.forEach(tech => {
         techDistribution[tech] = (techDistribution[tech] || 0) + 1;
       });
@@ -176,7 +182,7 @@ export function Projects() {
             ) : (
               filteredProjects.map((project, idx) => (
                 <motion.div 
-                  key={project.title}
+                  key={t(`projects.items.${index}.title`, project.title)}
                   layout
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -188,7 +194,7 @@ export function Projects() {
                   <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
                                         <img 
                       src={project.image} 
-                      alt={project.title} 
+                      alt={t(`projects.items.${index}.title`, project.title)} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />
@@ -207,7 +213,7 @@ export function Projects() {
                   
                   <div className="p-6 flex flex-col flex-grow">
                     <h3 className="text-xl font-display font-semibold text-slate-900 dark:text-slate-200 mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                      {project.title}
+                      {t(`projects.items.${index}.title`, project.title)}
                     </h3>
                     
                     <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
@@ -255,7 +261,7 @@ export function Projects() {
                   <BarChart3 className="w-6 h-6" />
                 </div>
                 <h3 className="text-2xl font-display font-semibold text-slate-900 dark:text-white">
-                  Tech Stack Distribution
+                  {t('projects.techStackDistribution', 'Tech Stack Distribution')}
                 </h3>
               </div>
               
@@ -319,7 +325,7 @@ export function Projects() {
                   <Github className="w-6 h-6" />
                 </div>
                 <h3 className="text-2xl font-display font-semibold text-slate-900 dark:text-white">
-                  GitHub Insights
+                  {t('projects.githubInsights', 'GitHub Insights')}
                 </h3>
               </div>
               
@@ -341,11 +347,11 @@ export function Projects() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-white dark:bg-slate-800/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700/50 text-center">
                         <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{githubStats.public_repos}</div>
-                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Repositories</div>
+                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('projects.repositories', 'Repositories')}</div>
                       </div>
                       <div className="bg-white dark:bg-slate-800/50 p-4 rounded-lg border border-slate-100 dark:border-slate-700/50 text-center">
                         <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{githubStats.followers}</div>
-                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Followers</div>
+                        <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t('projects.followers', 'Followers')}</div>
                       </div>
                     </div>
                   </div>

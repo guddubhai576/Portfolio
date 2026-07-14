@@ -138,6 +138,12 @@ const certificates = [
 
 export function Certificates() {
   const { t } = useTranslation();
+  const localizedCertificates = localizedCertificates.map((cert, i) => ({
+    ...cert,
+    title: t(`certificates.items.${i}.title`, cert.title),
+    issuer: t(`certificates.items.${i}.issuer`, cert.issuer),
+    date: t(`certificates.items.${i}.date`, cert.date)
+  }));
   return (
     <section id="certificates" className="py-24 px-6 relative transition-colors duration-300">
       <div className="max-w-4xl mx-auto">
@@ -148,7 +154,7 @@ export function Certificates() {
           </h2>
 
           <div className="grid gap-6">
-            {certificates.map((cert, idx) => (
+            {localizedCertificates.map((cert, idx) => (
               <motion.div 
                 key={cert.title}
                 initial={{ opacity: 0, y: 20 }}

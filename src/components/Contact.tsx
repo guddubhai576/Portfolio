@@ -93,7 +93,7 @@ export function Contact() {
             {t('contact.title', 'Get In Touch')}
           </h3>
           <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            I'm currently seeking internships, full-time Data Analyst / Frontend Developer roles, freelance opportunities, and open-source collaborations. My inbox is always open. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+            {t('contact.description', "I'm currently seeking internships, full-time Data Analyst / Frontend Developer roles, freelance opportunities, and open-source collaborations. My inbox is always open. Whether you have a question or just want to say hi, I'll try my best to get back to you!")}
           </p>
         </ScrollReveal>
 
@@ -104,7 +104,7 @@ export function Contact() {
                 <User className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Name</h4>
+                <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">{t("contact.name", "Name")}</h4>
                 <p className="text-slate-600 dark:text-slate-400">
                   Pratik Kumar Jena
                 </p>
@@ -116,7 +116,7 @@ export function Contact() {
                 <Mail className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Email</h4>
+                <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">{t("contact.email", "Email")}</h4>
                 <a href="mailto:pratikkumarjena04@gmail.com" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   pratikkumarjena04@gmail.com
                 </a>
@@ -128,7 +128,7 @@ export function Contact() {
                 <Phone className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Phone</h4>
+                <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">{t("contact.phone", "Phone")}</h4>
                 <a href="tel:+918456053237" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                   +91 8456053237
                 </a>
@@ -140,7 +140,7 @@ export function Contact() {
                 <MapPin className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Location</h4>
+                <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">{t("contact.location", "Location")}</h4>
                 <p className="text-slate-600 dark:text-slate-400">
                   Bhubaneswar, Odisha, India
                 </p>
@@ -156,7 +156,7 @@ export function Contact() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
+                  <label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("contact.name", "Name")}</label>
                   <input
                     type="text"
                     id="name"
@@ -165,11 +165,11 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors"
-                    placeholder="John Doe"
+                    placeholder={t("contact.namePlaceholder", "John Doe")}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
+                  <label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("contact.email", "Email")}</label>
                   <input
                     type="email"
                     id="email"
@@ -178,13 +178,13 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors"
-                    placeholder="john@example.com"
+                    placeholder={t("contact.emailPlaceholder", "john@example.com")}
                   />
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="date" className="text-sm font-medium text-slate-700 dark:text-slate-300">Preferred Date (Optional)</label>
+                  <label htmlFor="date" className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("contact.preferredDate", "Preferred Date (Optional)")}</label>
                   <input
                     type="date"
                     id="date"
@@ -195,7 +195,7 @@ export function Contact() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="time" className="text-sm font-medium text-slate-700 dark:text-slate-300">Preferred Time (Optional)</label>
+                  <label htmlFor="time" className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("contact.preferredTime", "Preferred Time (Optional)")}</label>
                   <input
                     type="time"
                     id="time"
@@ -207,7 +207,7 @@ export function Contact() {
                 </div>
               </div>
               <div className="space-y-2">
-                <label htmlFor="message" className="text-sm font-medium text-slate-700 dark:text-slate-300">Message</label>
+                <label htmlFor="message" className="text-sm font-medium text-slate-700 dark:text-slate-300">{t("contact.message", "Message")}</label>
                 <textarea
                   id="message"
                   name="message"
@@ -216,7 +216,7 @@ export function Contact() {
                   required
                   rows={5}
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-colors resize-none"
-                  placeholder="How can I help you?"
+                  placeholder={t("contact.messagePlaceholder", "How can I help you?")}
                 ></textarea>
               </div>
               <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -232,11 +232,11 @@ export function Contact() {
                   {isSubmitting ? (
                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : submitted ? (
-                    'Message Sent Successfully!'
+                    t('contact.success', 'Message Sent Successfully!')
                   ) : (
                     <>
                       <Send className="w-5 h-5" />
-                      Send Message
+                      {t('contact.send', 'Send Message')}
                     </>
                   )}
                 </button>

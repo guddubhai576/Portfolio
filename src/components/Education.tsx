@@ -14,6 +14,14 @@ const educationList = [
 
 export function Education() {
   const { t } = useTranslation();
+  const localizedEducationList = localizedEducationList.map((edu, i) => ({
+    ...edu,
+    degree: t(`education.items.${i}.degree`, edu.degree),
+    specialization: t(`education.items.${i}.specialization`, edu.specialization),
+    institution: t(`education.items.${i}.institution`, edu.institution),
+    duration: t(`education.items.${i}.duration`, edu.duration),
+    description: t(`education.items.${i}.description`, edu.description)
+  }));
   return (
     <section id="education" className="py-24 px-6 relative bg-slate-100/50 dark:bg-slate-900/20 transition-colors duration-300">
       <div className="max-w-3xl mx-auto">
@@ -24,7 +32,7 @@ export function Education() {
           </h2>
 
           <div className="space-y-12">
-            {educationList.map((edu, idx) => (
+            {localizedEducationList.map((edu, idx) => (
               <motion.div 
                 key={idx}
                 initial={{ opacity: 0, x: -20 }}
@@ -51,7 +59,7 @@ export function Education() {
                       {edu.degree}
                     </h3>
                     {edu.specialization && (
-                      <p className="text-teal-600 dark:text-teal-400 font-medium mb-1">Specialization in {edu.specialization}</p>
+                      <p className="text-teal-600 dark:text-teal-400 font-medium mb-1">{t('education.specialization', 'Specialization in')} {edu.specialization}</p>
                     )}
                     <p className="text-lg text-slate-600 dark:text-slate-400 mb-4">{edu.institution}</p>
                     <p className="text-slate-700 dark:text-slate-400 leading-relaxed">
