@@ -70,8 +70,10 @@ Here is some context about Pratik:
       console.error('Chat error:', error);
       if (error?.status === 429 || (error?.message && error.message.includes('429')) || (error?.message && error.message.includes('quota'))) {
         res.status(429).json({ error: "API Quota Exceeded for this model. Please try again later or upgrade your plan." });
+      } else if (error?.status === 503 || (error?.message && error.message.includes('503'))) {
+        res.status(503).json({ error: "The AI model is currently experiencing high demand. Please try again later." });
       } else {
-        res.status(500).json({ error: 'Failed to process chat message' });
+        res.status(500).json({ error: 'Failed to process chat message. Please try again later.' });
       }
     }
   });
@@ -120,9 +122,15 @@ Here is some context about Pratik:
         }));
 
       res.json({ response: response.text, places });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Maps AI error:', error);
-      res.status(500).json({ error: 'Failed to process maps query' });
+      if (error?.status === 429 || (error?.message && error.message.includes('429')) || (error?.message && error.message.includes('quota'))) {
+        res.status(429).json({ error: "API Quota Exceeded for this model. Please try again later or upgrade your plan." });
+      } else if (error?.status === 503 || (error?.message && error.message.includes('503'))) {
+        res.status(503).json({ error: "The AI model is currently experiencing high demand. Please try again later." });
+      } else {
+        res.status(500).json({ error: 'Failed to process maps query. Please try again later.' });
+      }
     }
   });
 

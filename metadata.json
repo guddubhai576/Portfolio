@@ -1,6 +1,6 @@
 {
   "name": "Pratik Kumar Jena - Portfolio",
   "description": "Personal portfolio website for Pratik Kumar Jena, Data Analyst and Frontend Developer.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": ["microphone"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
