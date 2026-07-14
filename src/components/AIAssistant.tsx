@@ -164,13 +164,30 @@ export function AIAssistant() {
         }
       };
 
-      ws.onmessage = (event) => {
+                  ws.onmessage = (event) => {
         const msg = JSON.parse(event.data);
         if (msg.audio) {
           playAudioChunk(outputAudioCtx, msg.audio);
         }
         if (msg.interrupted) {
           nextStartTimeRef.current = 0;
+        }
+        if (msg.command === "navigate" && msg.section) {
+          const sectionEl = document.getElementById(msg.section.toLowerCase());
+          if (sectionEl) {
+            sectionEl.scrollIntoView({ behavior: "smooth" });
+          }
+        }
+        if (msg.command === "download_resume") {
+          const a = document.createElement("a");
+          a.href = "/resume.pdf";
+          a.download = "Pratik_Kumar_Jena_Resume.pdf";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
+        if (msg.command === "toggle_theme") {
+          document.documentElement.classList.toggle('dark');
         }
       };
       
