@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { Code, Database, Brain, Terminal, BarChart as ChartIcon, Layout, GitBranch, TerminalSquare, Laptop, LineChart, Server } from 'lucide-react';
+import { SkillChart } from './SkillChart';
 
 const skillCategories = [
   {
@@ -53,6 +54,17 @@ export function Skills() {
             <span className="text-teal-600 dark:text-teal-400 font-mono text-xl">02.</span> {t('skills.title', 'Tech Stack')}
             <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1 ml-4"></div>
           </h2>
+
+          <div className="mb-16">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <SkillChart />
+            </motion.div>
+          </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
             {skillCategories.map((category, idx) => (
