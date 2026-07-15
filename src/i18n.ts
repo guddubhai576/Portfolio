@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 // translation files
 import enTranslation from './locales/en.json';
 import hiTranslation from './locales/hi.json';
+import esTranslation from './locales/es.json';
 
 i18n
   .use(initReactI18next)
@@ -11,6 +12,9 @@ i18n
     resources: {
       en: {
         translation: enTranslation
+      },
+      es: {
+        translation: esTranslation
       },
       hi: {
         translation: hiTranslation

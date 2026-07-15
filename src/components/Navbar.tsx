@@ -47,8 +47,13 @@ export function Navbar() {
   };
 
   const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'hi' : 'en';
-    i18n.changeLanguage(newLang);
+    const nextLang: Record<string, string> = {
+      en: 'es',
+      es: 'hi',
+      hi: 'en'
+    };
+    const currentLang = i18n.language || 'en';
+    i18n.changeLanguage(nextLang[currentLang] || 'en');
   };
 
   return (

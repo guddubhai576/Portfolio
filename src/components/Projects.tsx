@@ -2,7 +2,7 @@ import { ScrollReveal } from './ScrollReveal';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import { FolderGit2, ExternalLink, Github, BarChart3, Filter } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, LineChart, Line } from 'recharts';
 import { useMemo, useState, useEffect } from 'react';
 
 const projects = [
@@ -118,6 +118,15 @@ export function Projects() {
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
   }, []);
+
+  const impactData = useMemo(() => [
+    { month: 'Jan', commits: 45, impact: 20 },
+    { month: 'Feb', commits: 52, impact: 35 },
+    { month: 'Mar', commits: 78, impact: 45 },
+    { month: 'Apr', commits: 65, impact: 60 },
+    { month: 'May', commits: 89, impact: 75 },
+    { month: 'Jun', commits: 110, impact: 90 },
+  ], []);
 
   const COLORS = ['#0d9488', '#14b8a6', '#2dd4bf', '#5eead4', '#99f6e4', '#ccfbf1'];
 
@@ -359,6 +368,56 @@ export function Projects() {
               </div>
             </motion.div>
           </div>
+          <div className="grid grid-cols-1 gap-6 print-hidden mt-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm dark:shadow-none flex flex-col"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="p-3 bg-teal-100 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-xl">
+                  <BarChart3 className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-display font-semibold text-slate-900 dark:text-white">
+                  {t('projects.impactTrends', 'Project Impact & Trends')}
+                </h3>
+              </div>
+              
+              <div className="h-[300px] w-full flex-grow">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={impactData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.1} vertical={false} />
+                    <XAxis 
+                      dataKey="month" 
+                      tick={{ fill: '#64748b', fontSize: 12 }} 
+                      axisLine={{ stroke: '#cbd5e1', opacity: 0.2 }}
+                      tickLine={false}
+                    />
+                    <YAxis 
+                      tick={{ fill: '#64748b', fontSize: 12 }} 
+                      axisLine={false} 
+                      tickLine={false}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#1e293b', 
+                        border: 'none', 
+                        borderRadius: '8px',
+                        color: '#f8fafc',
+                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                      }}
+                      itemStyle={{ color: '#2dd4bf' }}
+                    />
+                    <Line type="monotone" dataKey="commits" name="Activity (Commits)" stroke="#14b8a6" strokeWidth={3} dot={{ r: 4, fill: '#14b8a6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+                    <Line type="monotone" dataKey="impact" name="Impact Score" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </motion.div>
+          </div>
+
         </ScrollReveal>
       </div>
     </section>
