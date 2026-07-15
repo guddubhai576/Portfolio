@@ -68,11 +68,11 @@ const projects = [
   }
 ];
 
-const categories = ["All", ...new Set(localizedProjects.map(p => p.category))];
+const categories = ["All", ...new Set(projects.map(p => p.category))];
 
 export function Projects() {
   const { t } = useTranslation();
-  const localizedProjects = localizedProjects.map((p, i) => ({
+  const localizedProjects = projects.map((p, i) => ({
     ...p,
     title: t(`projects.items.${i}.title`, p.title),
     description: t(`projects.items.${i}.description`, p.description),
@@ -109,7 +109,7 @@ export function Projects() {
   );
   const techData = useMemo(() => {
     const techDistribution: Record<string, number> = {};
-    localizedProjects.forEach(project => {
+    projects.forEach(project => {
       project.tech.forEach(tech => {
         techDistribution[tech] = (techDistribution[tech] || 0) + 1;
       });
@@ -182,7 +182,7 @@ export function Projects() {
             ) : (
               filteredProjects.map((project, idx) => (
                 <motion.div 
-                  key={t(`projects.items.${index}.title`, project.title)}
+                  key={project.title}
                   layout
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -194,7 +194,7 @@ export function Projects() {
                   <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
                                         <img 
                       src={project.image} 
-                      alt={t(`projects.items.${index}.title`, project.title)} 
+                      alt={project.title} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />
@@ -213,7 +213,7 @@ export function Projects() {
                   
                   <div className="p-6 flex flex-col flex-grow">
                     <h3 className="text-xl font-display font-semibold text-slate-900 dark:text-slate-200 mb-3 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                      {t(`projects.items.${index}.title`, project.title)}
+                      {project.title}
                     </h3>
                     
                     <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow">

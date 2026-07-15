@@ -10,6 +10,8 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { AIAssistant } from './components/AIAssistant';
 import { BackToTop } from './components/BackToTop';
+import { SectionReveal } from './components/SectionReveal';
+
 import { useEffect } from 'react';
 
 export default function App() {
@@ -41,14 +43,14 @@ export default function App() {
     <div className="min-h-screen font-sans selection:bg-teal-500/30">
       <Navbar />
       <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Experience />
-        <Education />
-        <Certificates />
-        <Projects />
-        <Contact />
+        <SectionReveal><Hero /></SectionReveal>
+        <SectionReveal><About /></SectionReveal>
+        <SectionReveal><Skills /></SectionReveal>
+        <SectionReveal><Experience /></SectionReveal>
+        <SectionReveal><Education /></SectionReveal>
+        <SectionReveal><Certificates /></SectionReveal>
+        <SectionReveal><Projects /></SectionReveal>
+        <SectionReveal><Contact /></SectionReveal>
       </main>
       <Footer />
       <AIAssistant />

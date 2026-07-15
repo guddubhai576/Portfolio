@@ -14,7 +14,7 @@ const educationList = [
 
 export function Education() {
   const { t } = useTranslation();
-  const localizedEducationList = localizedEducationList.map((edu, i) => ({
+  const localizedEducationList = educationList.map((edu, i) => ({
     ...edu,
     degree: t(`education.items.${i}.degree`, edu.degree),
     specialization: t(`education.items.${i}.specialization`, edu.specialization),

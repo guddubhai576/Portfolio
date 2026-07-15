@@ -138,7 +138,7 @@ const certificates = [
 
 export function Certificates() {
   const { t } = useTranslation();
-  const localizedCertificates = localizedCertificates.map((cert, i) => ({
+  const localizedCertificates = certificates.map((cert, i) => ({
     ...cert,
     title: t(`certificates.items.${i}.title`, cert.title),
     issuer: t(`certificates.items.${i}.issuer`, cert.issuer),
